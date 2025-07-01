@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables
+.env
+.venv/
+
+# Django stuff:
+*.sqlite3
+db.sqlite3
+
+# VSCode settings
+.vscode/
+
+# Logs
+*.log
+
+# MySQL / outros arquivos de senha (se estiverem em algum arquivo)
+*.env
+
+# Arquivos compilados
+*.pyc

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DashBoard - Industrias Wayne -</title>
+    <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+    <h1>Bem-vindo, {{ user.username }}!</h1>
+    <p>Seu tipo de usuário é: {{ user.get_user_type_display }}</p>
+    <p><a href="{% url 'logout' %}">Sair</a></p>
+</body>
+</html>

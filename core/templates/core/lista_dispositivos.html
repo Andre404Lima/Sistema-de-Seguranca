@@ -1,0 +1,26 @@
+<!-- core/templates/core/lista_equipamentos.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dispositivos</title>
+</head>
+<body>
+    <h1>Lista de Dispositivos</h1>
+    <p>Usuário: {{ request.user.username }} ({{ request.user.get_user_type_display }})</p>
+
+    <ul>
+        {% for dispositivo in dispositivos %}
+            <li>
+                <strong>{{ dispositivo.nome }}</strong> - Localização: {{ dispositivo.get_localizacao_display }}
+                {% if dispositivo.secret %}
+                    <span style="color:red;">[SECRETO]</span>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhum dispositivo disponível.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lista de Equipamentos</title>
+</head>
+<body>
+    <h1>Equipamentos Cadastrados</h1>
+    <ul>
+        {% for equipamento in equipamentos %}
+            <li>{{ equipamento.nome }} - Localização: {{ equipamento.get_localizacao_display }}</li>
+        {% empty %}
+            <li>Nenhum equipamento cadastrado.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
