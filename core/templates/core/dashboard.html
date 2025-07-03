@@ -4,11 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DashBoard - Industrias Wayne -</title>
-    <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
     <h1>Bem-vindo, {{ user.username }}!</h1>
+
     <p>Seu tipo de usuário é: {{ user.get_user_type_display }}</p>
+
+    <ul>
+        <li><a href="{% url 'lista_dispositivos' %}">Ver Dispositivos</a></li>
+        <li><a href="{% url 'lista_equipamentos' %}">Ver Equipamentos</a></li>
+        <li><a href="{% url 'lista_veiculos' %}">Ver Veículos</a></li>
+    </ul>
+
+    <h2>Localizações</h2>
+    <h3>Locais</h3>
+
+    <ul>
+        {% for valor, nome in locais_publicos %}
+            <li>
+                <a href="{% url 'itens_por_local' valor %}">{{ nome }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if user_type in 'batman alfred' %}
+        <h3>Locais Secretos</h3>
+        <ul>
+            {% for valor, nome in locais_secretos %}
+                <li>
+                    <a href="{% url 'itens_por_local' valor %}">
+                        {{ nome }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <p><a href="{% url 'logout' %}">Sair</a></p>
 </body>
 </html>

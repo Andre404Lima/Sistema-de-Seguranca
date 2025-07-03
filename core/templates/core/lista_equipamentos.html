@@ -1,18 +1,41 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Lista de Equipamentos</title>
+    <title>Equipamentos</title>
 </head>
 <body>
-    <h1>Equipamentos Cadastrados</h1>
-    <ul>
-        {% for equipamento in equipamentos %}
-            <li>{{ equipamento.nome }} - Localização: {{ equipamento.get_localizacao_display }}</li>
-        {% empty %}
-            <li>Nenhum equipamento cadastrado.</li>
-        {% endfor %}
-    </ul>
+    <h1>Lista de Equipamentos</h1>
+    <p>Usuário: {{ request.user.username }} ({{ request.user.get_user_type_display }})</p>
+    <h2>Equipamentos</h2>
+
+    {% for item in equipamentos %}
+        <p>
+            <strong>{{ item.obj.nome }}  — Total: {{ item.total }}</strong>
+            {% if item.obj.secret %} 
+                <span style="color:red;">[SECRETO]</span>{% endif %} <br>
+            {{ item.obj.descricao }}
+        </p>
+        <ul>
+            {% for est in item.estoques %}
+                <li>
+                    {{ est.get_localizacao_display }}
+                    — {{ est.quantidade }}
+                    {% if est.localizacao in localizacoes_secretas %} 
+                        <span style="color:red;">[SECRETO]</span>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>Sem estoque visível</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+    <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
 </body>
 </html>
+
+
+
+

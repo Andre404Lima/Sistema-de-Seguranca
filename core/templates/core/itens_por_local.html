@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Dispositivos</h2>
+    {% if dispositivos_estoque %}
+        <ul>
+            {% for est in dispositivos_estoque %}
+                <li>{{ est.dispositivo.nome }} {% if est.dispositivo.secret %} <span style="color:red;">[SECRETO]</span>{% endif %}  — Quantidade: {{ est.quantidade }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum dispositivo encontrado.</p>
+    {% endif %}
+
+    <h2>Equipamentos</h2>
+    {% if equipamentos_estoque %}
+        <ul>
+            {% for est in equipamentos_estoque %}
+                <li>{{ est.equipamento.nome }}{% if est.equipamento.secret %} <span style="color:red;">[SECRETO]</span>{% endif %} — Quantidade: {{ est.quantidade }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum equipamento encontrado.</p>
+    {% endif %}
+
+    <h2>Veículos</h2>
+    {% if veiculos_estoque %}
+        <ul>
+            {% for est in veiculos_estoque %}
+                <li>{{ est.veiculo.tipo }} {{ est.veiculo.modelo }} {% if est.veiculo.secret %} <span style="color:red;">[SECRETO]</span>{% endif %} — Quantidade: {{ est.quantidade }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum veículo encontrado.</p>
+    {% endif %}
+
+        <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
+</body>
+</html>
