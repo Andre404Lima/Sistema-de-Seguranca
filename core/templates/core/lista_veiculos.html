@@ -1,26 +1,35 @@
-<!-- core/templates/core/lista_veiculos.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Veículos</title>
+    <title>Veiculos</title>
 </head>
 <body>
-    <h1>Lista de Veículos</h1>
+    <h1>Lista de Veiculos</h1>
     <p>Usuário: {{ request.user.username }} ({{ request.user.get_user_type_display }})</p>
+    <h2>Veiculos</h2>
 
-    <ul>
-        {% for veiculo in veiculos %}
-            <li>
-                <strong>{{ veiculo.nome }}</strong> - Localização: {{ veiculo.get_localizacao_display }}
-                {% if veiculo.secret %}
-                    <span style="color:red;">[SECRETO]</span>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>Nenhum veículo disponível.</li>
-        {% endfor %}
-    </ul>
+    {% for item in veiculos %}
+        <p>
+            <strong>{{ item.obj.modelo }} — Total: {{ item.total }}</strong>{% if item.obj.secret %} <span style="color:red;">[SECRETO]</span>{% endif %}<br>
+            {{ item.obj.descricao }}
+        </p>
+        <ul>
+            {% for est in item.estoques %}
+                <li>
+                    {{ est.get_localizacao_display }}
+                    {% if est.localizacao in localizacoes_secretas %}
+                        <span style="color:red;">[SECRETO]</span>
+                    {% endif %}
+                    — {{ est.quantidade }}
+                </li>
+            {% empty %}
+                <li>Sem estoque visível</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+    <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
 </body>
 </html>

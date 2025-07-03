@@ -9,5 +9,7 @@ urlpatterns = [
     path('equipamentos/', lista_equipamentos, name='lista_equipamentos'),
     path('dispositivos/', lista_dispositivos, name='lista_dispositivos'),
     path('veiculos/', lista_veiculos, name='lista_veiculos'),
+    path('local/<str:local>/', views.itens_por_local, name='itens_por_local'),
 ]
+
 

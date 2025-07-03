@@ -92,12 +92,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wayne_security',
         'USER': 'root',
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD'),
+        'PASSWORD': os.getenv('MYSQL_PASSWORD'),
         'HOST': 'localhost',
         'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
     }
 }
 
@@ -144,4 +141,3 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.CustomUser'
-

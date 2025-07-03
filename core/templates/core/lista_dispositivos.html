@@ -1,4 +1,3 @@
-<!-- core/templates/core/lista_equipamentos.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -9,18 +8,33 @@
 <body>
     <h1>Lista de Dispositivos</h1>
     <p>Usuário: {{ request.user.username }} ({{ request.user.get_user_type_display }})</p>
+    <h2>Dispositivos</h2>
 
-    <ul>
-        {% for dispositivo in dispositivos %}
-            <li>
-                <strong>{{ dispositivo.nome }}</strong> - Localização: {{ dispositivo.get_localizacao_display }}
-                {% if dispositivo.secret %}
-                    <span style="color:red;">[SECRETO]</span>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>Nenhum dispositivo disponível.</li>
-        {% endfor %}
-    </ul>
+    {% for item in dispositivos %}
+        <p>
+            <strong>{{ item.obj.nome }} — Total: {{ item.total }}</strong> 
+            {% if item.obj.secret %} 
+                <span style="color:red;">[SECRETO]</span>
+            {% endif %} <br>
+            {{ item.obj.descricao }}
+        </p>
+        <ul>
+            {% for est in item.estoques %}
+                <li>
+                    {{ est.get_localizacao_display }}
+                    — {{ est.quantidade }}
+                    {% if est.localizacao in localizacoes_secretas %}
+                        <span style="color:red;">[SECRETO]</span>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>Sem estoque visível</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+    <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
 </body>
 </html>
+
+

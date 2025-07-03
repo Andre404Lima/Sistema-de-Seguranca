@@ -6,17 +6,25 @@ class Veiculo(models.Model):
         ('carro', 'Carro'),
         ('moto', 'Moto'),
         ('blindado', 'Blindado'),
-        ('dronado', 'Drone'),
+        ('drone', 'Drone'),
     ]
     tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
     descricao = models.TextField(blank=True)
     modelo = models.CharField(max_length=100)
-    placa = models.CharField(max_length=20, unique=True)
-    quantidade = models.PositiveIntegerField(default=1)
     ultima_manutencao = models.DateField()
     ativo = models.BooleanField(default=True)
-    localizacao = models.CharField(max_length=30, choices=LOCALIZACAO_CHOICES)
     secret = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.modelo} ({self.placa}) - {self.get_localizacao_display()}"
+        return f"{self.tipo} {self.modelo}"
+
+class EstoqueVeiculo(models.Model):
+    veiculo = models.ForeignKey(Veiculo, on_delete=models.CASCADE, related_name='estoques')
+    localizacao = models.CharField(max_length=30, choices=LOCALIZACAO_CHOICES)
+    quantidade = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('veiculo', 'localizacao')
+
+    def __str__(self):
+        return f"{self.veiculo.tipo} - {self.veiculo.modelo} - {self.localizacao}: {self.quantidade}"
