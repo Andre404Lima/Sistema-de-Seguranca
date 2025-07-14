@@ -7,9 +7,27 @@
 </head>
 <body>
     <h1>Bem-vindo, {{ user.username }}!</h1>
+    <p>Seu Cargo é: {{ user.get_user_type_display }}</p>
+        {% if messages %}
+    {% for message in messages %}
+        <p style="color:red;">{{ message }}</p>
+    {% endfor %}
+    {% endif %}
 
-    <p>Seu tipo de usuário é: {{ user.get_user_type_display }}</p>
-
+    {% if requisicoes %}
+    <h2>Requisições Pendentes</h2>
+    <ul>
+        {% for req in requisicoes %}
+            <li>
+                {{ req.get_tipo_display }} de {{ req.quantidade }} {{ req.item_tipo }}(s)
+                {% if req.origem %} de {{ req.origem }}{% endif %} para {{ req.destino }}
+                — Solicitado por {{ req.solicitante.username }}
+                <a href="{% url 'autorizar_requisicao' req.id %}">[Aprovar]</a>
+                <a href="{% url 'rejeitar_requisicao' req.id %}">[Rejeitar]</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     <ul>
         <li><a href="{% url 'lista_dispositivos' %}">Ver Dispositivos</a></li>
         <li><a href="{% url 'lista_equipamentos' %}">Ver Equipamentos</a></li>
@@ -17,7 +35,6 @@
     </ul>
 
     <h2>Localizações</h2>
-    <h3>Locais</h3>
 
     <ul>
         {% for valor, nome in locais_publicos %}
@@ -32,9 +49,7 @@
         <ul>
             {% for valor, nome in locais_secretos %}
                 <li>
-                    <a href="{% url 'itens_por_local' valor %}">
-                        {{ nome }}
-                    </a>
+                    <a href="{% url 'itens_por_local' valor %}"> {{ nome }}</a>
                 </li>
             {% endfor %}
         </ul>

@@ -1,35 +1,77 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Veiculos</title>
+    <link rel="stylesheet" href="{% static 'core/veiculos.css' %}">
 </head>
 <body>
     <h1>Lista de Veiculos</h1>
-    <p>Usuário: {{ request.user.username }} ({{ request.user.get_user_type_display }})</p>
+    <p>Bem-vindo: {{ request.user.username }} | Cargo: {{ request.user.get_user_type_display }}</p>
     <h2>Veiculos</h2>
 
     {% for item in veiculos %}
-        <p>
-            <strong>{{ item.obj.modelo }} — Total: {{ item.total }}</strong>{% if item.obj.secret %} <span style="color:red;">[SECRETO]</span>{% endif %}<br>
-            {{ item.obj.descricao }}
-        </p>
-        <ul>
-            {% for est in item.estoques %}
-                <li>
-                    {{ est.get_localizacao_display }}
-                    {% if est.localizacao in localizacoes_secretas %}
-                        <span style="color:red;">[SECRETO]</span>
+        <div class="item-card">
+            {% if item.obj.imagem %}
+                <div class="imagem">
+                    <img src="{{ item.obj.imagem.url }}" alt="{{ item.obj.nome }}" class="miniatura" onclick="mostrarImagem(this)">
+                </div>
+            {% endif %}
+            <div class="informacoes">
+                <div class="modelo">
+                    <strong>{{ item.obj.nome }}{{ item.obj.modelo }} — Total: {{ item.total }}</strong>
+                    {% if item.obj.secret %}
+                        <span class="secreto">[SECRETO]</span>
                     {% endif %}
-                    — {{ est.quantidade }}
-                </li>
-            {% empty %}
-                <li>Sem estoque visível</li>
-            {% endfor %}
-        </ul>
+                </div>
+                <div class="descricao">
+                    {{ item.obj.descricao }}
+                </div>
+                <div class="estoques">
+                    <ul>
+                        {% for est in item.estoques %}
+                            <li>
+                                {{ est.get_localizacao_display }} — {{ est.quantidade }}
+                                <button type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
+                                <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
+                                    <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="tipo_item" value="dispositivo">
+                                        <input type="hidden" name="item_id" value="{{ item.obj.id }}">
+                                        <input type="hidden" name="origem" value="{{ est.localizacao }}">
+                                        <label>Qtd:</label>
+                                        <input type="number" name="quantidade" min="1" max="{{ est.quantidade }}" required style="width: 60px;">
+                                        <label>Destino:</label>
+                                        <select name="destino" required>
+                                            {% for codigo, nome in localizacoes_visiveis %}
+                                                {% if codigo != est.localizacao %}
+                                                    <option value="{{ codigo }}">{{ nome }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit">Enviar</button>
+                                        <button type="button" onclick="fecharFormulario('{{ est.id }}')" style="margin-left: 10px;">X</button>
+                                    </form>
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li>Sem estoque visível</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     {% endfor %}
 
+    <div id="overlay" onclick="fecharImagem()">
+        <img id="imagemExpandida" src="" alt="Imagem Expandida">
+    </div>
+
     <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
+
+    <script src="{% static 'core/script.js' %}"></script>
 </body>
 </html>
+

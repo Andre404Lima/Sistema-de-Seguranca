@@ -8,6 +8,7 @@ class Dispositivo(models.Model):
     ultima_manutencao = models.DateField()
     ativo = models.BooleanField(default=True)
     secret = models.BooleanField(default=False)
+    imagem = models.ImageField(upload_to='dispositivos', null=True, blank=True)
 
     def __str__(self):
         return self.nome

@@ -6,6 +6,7 @@ class Equipamento(models.Model):
     descricao = models.TextField(blank=True)
     ultima_manutencao = models.DateField()
     secret = models.BooleanField(default=False)
+    imagem = models.ImageField(upload_to='equipamentos', null=True, blank=True)
 
     def __str__(self):
         return f"{self.nome}"
