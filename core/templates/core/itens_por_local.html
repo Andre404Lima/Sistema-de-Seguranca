@@ -10,7 +10,13 @@
     {% if dispositivos_estoque %}
         <ul>
             {% for est in dispositivos_estoque %}
-                <li>{{ est.dispositivo.nome }} {% if est.dispositivo.secret %} <span style="color:red;">[SECRETO]</span>{% endif %}  — Quantidade: {{ est.quantidade }}</li>
+            <li>
+                {% if est.dispositivo.secret %} 
+                    <span style="color:red;">[SECRETO]</span>
+                {% endif %}
+                {{ est.dispositivo.nome }} — Quantidade: {{ est.quantidade }}<br>
+                - {{ est.dispositivo.descricao }}
+            </li>
             {% endfor %}
         </ul>
     {% else %}
@@ -21,7 +27,12 @@
     {% if equipamentos_estoque %}
         <ul>
             {% for est in equipamentos_estoque %}
-                <li>{{ est.equipamento.nome }}{% if est.equipamento.secret %} <span style="color:red;">[SECRETO]</span>{% endif %} — Quantidade: {{ est.quantidade }}</li>
+                <li>
+                    {% if est.equipamento.secret %} 
+                        <span style="color:red;">[SECRETO]</span>
+                    {% endif %}
+                    {{ est.equipamento.nome }} — Quantidade: {{ est.quantidade }}</li><br>
+                    - {{ est.equipamento.descricao }}
             {% endfor %}
         </ul>
     {% else %}
@@ -32,7 +43,13 @@
     {% if veiculos_estoque %}
         <ul>
             {% for est in veiculos_estoque %}
-                <li>{{ est.veiculo.tipo }} {{ est.veiculo.modelo }} {% if est.veiculo.secret %} <span style="color:red;">[SECRETO]</span>{% endif %} — Quantidade: {{ est.quantidade }}</li>
+                <li>
+                    {% if est.veiculo.secret %} 
+                        <span style="color:red;">[SECRETO]</span>
+                    {% endif %}
+                    {{ est.veiculo.tipo }} {{ est.veiculo.modelo }} — Quantidade: {{ est.quantidade }}<br>
+                    - {{ est.veiculo.descricao }}
+                </li>
             {% endfor %}
         </ul>
     {% else %}
