@@ -1,0 +1,9 @@
+from .auth_view import login_view, logout_view
+from .dashboard_view import dashboard, formatar_nome_imagem
+from .equipamentos_view import lista_equipamentos
+from .dispositivos_view import lista_dispositivos
+from .veiculos_view import lista_veiculos
+from .local_view import itens_por_local
+from .movimentacao_view import solicitar_movimentacao, autorizar_requisicao, rejeitar_requisicao
+from .solicitar_compra_view import solicitar_compra
+from.ordem_de_compra_view import autorizar_solicitacao_compra, negar_solicitacao_compra, criar_ordem_compra_direta, pagar_ordem_compra, negar_ordem_compra

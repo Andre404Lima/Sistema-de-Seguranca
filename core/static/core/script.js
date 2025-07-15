@@ -21,6 +21,8 @@ function fecharFormulario(id) {
     const form = document.getElementById(`formulario-${id}`);
     if (form) {
         form.style.display = 'none';
+    } else {
+        console.warn(`Formulário com ID formulario-${id} não encontrado`);
     }
 }
 

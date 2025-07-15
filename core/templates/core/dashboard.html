@@ -1,60 +1,131 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DashBoard - Industrias Wayne -</title>
+    <title>DashBoard - Indústrias Wayne -</title>
+        <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
 </head>
 <body>
     <h1>Bem-vindo, {{ user.username }}!</h1>
     <p>Seu Cargo é: {{ user.get_user_type_display }}</p>
-        {% if messages %}
-    {% for message in messages %}
-        <p style="color:red;">{{ message }}</p>
-    {% endfor %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:red;">{{ message }}</p>
+        {% endfor %}
     {% endif %}
 
     {% if requisicoes %}
-    <h2>Requisições Pendentes</h2>
-    <ul>
-        {% for req in requisicoes %}
-            <li>
-                {{ req.get_tipo_display }} de {{ req.quantidade }} {{ req.item_tipo }}(s)
-                {% if req.origem %} de {{ req.origem }}{% endif %} para {{ req.destino }}
-                — Solicitado por {{ req.solicitante.username }}
-                <a href="{% url 'autorizar_requisicao' req.id %}">[Aprovar]</a>
-                <a href="{% url 'rejeitar_requisicao' req.id %}">[Rejeitar]</a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    <ul>
-        <li><a href="{% url 'lista_dispositivos' %}">Ver Dispositivos</a></li>
-        <li><a href="{% url 'lista_equipamentos' %}">Ver Equipamentos</a></li>
-        <li><a href="{% url 'lista_veiculos' %}">Ver Veículos</a></li>
-    </ul>
-
-    <h2>Localizações</h2>
-
-    <ul>
-        {% for valor, nome in locais_publicos %}
-            <li>
-                <a href="{% url 'itens_por_local' valor %}">{{ nome }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    {% if user_type in 'batman alfred' %}
-        <h3>Locais Secretos</h3>
+        <h2>Requisições Pendentes</h2>
         <ul>
-            {% for valor, nome in locais_secretos %}
+            {% for req in requisicoes %}
                 <li>
-                    <a href="{% url 'itens_por_local' valor %}"> {{ nome }}</a>
+                    {{ req.quantidade }} {{ req.item_nome }}(s)
+                    {% if req.origem %} de {{ req.origem }}{% endif %} para {{ req.destino }}
+                    — Solicitado por {{ req.solicitante.username }}
+                    <a href="{% url 'autorizar_requisicao' req.id %}">[Aprovar]</a>
+                    <a href="{% url 'rejeitar_requisicao' req.id %}">[Rejeitar]</a>
                 </li>
             {% endfor %}
         </ul>
     {% endif %}
 
+    {% if user_type == 'gerente' and solicitacoes %}
+        <h2>Solicitações de Compra Pendentes</h2>
+        <ul>
+            {% for sol in solicitacoes %}
+                <li>
+                    Solicitações de Compra de {{ sol.quantidade }} unidades de {{ sol.nome_item }} para {{ sol.destino }} — por {{ sol.criado_por.username }}
+                    <a href="{% url 'autorizar_solicitacao' sol.id %}">[Autorizar]</a>
+                    <a href="{% url 'negar_solicitacao' sol.id %}">[Negar]</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if user_type in 'administrador,batman,alfred' and ordens %}
+        <h2>Ordens de Compra para Pagamento</h2>
+        <ul>
+            {% for ordem in ordens %}
+                <li>
+                    Ordem #{{ ordem.id }}: {{ ordem.quantidade }}x {{ ordem.tipo_item }} → {{ ordem.destino }}
+                    {% if user_type == 'alfred' and ordem.destino|slice:":7" != "SECRETO" %}
+                        (restrito)
+                    {% else %}
+                        <a href="{% url 'pagar_ordem' ordem.id %}">[Pagar]</a>
+                        <a href="{% url 'negar_ordem' ordem.id %}">[Negar]</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Itens</h2>
+    <div class="itens-container">
+
+        <a href="{% url 'lista_dispositivos' %}" class="item-card-link">
+            <div class="item-card" style="background-image: url('/media/dispositivos/Capa.jpg');">
+                <div class="item-info">
+                    <span class="item-titulo">Dispositivos</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'lista_equipamentos' %}" class="item-card-link">
+            <div class="item-card" style="background-image: url('/media/equipamentos/Capa.jpg');">
+                <div class="item-info">
+                    <span class="item-titulo">Equipamentos</span>
+                </div>
+            </div>
+        </a>
+
+        <a href="{% url 'lista_veiculos' %}" class="item-card-link">
+            <div class="item-card" style="background-image: url('/media/veiculos/Capa.jpg');">
+                <div class="item-info">
+                    <span class="item-titulo">Veículos</span>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <h2>Localizações</h2>
+    <div class="locais-container">
+        {% for local in locais_publicos %}
+            <div class="local-item">
+                <a href="{% url 'itens_por_local' local.valor %}" class="local-card" style="background-image: url('/media/locais/Capa.jpg');" >
+                    <div class="local-info">{{ local.nome }}</div>
+                </a>
+                <img src="/media/locais/{{ local.imagem }}" alt="{{ local.nome }}" class="local-imagem" onclick="mostrarImagem(this)">
+            </div>
+        {% endfor %}
+    </div>
+    {% if locais_secretos %}
+        <h3>Locais Secretos</h3>
+        <div class="locais-container">
+            {% for local in locais_secretos %}
+                <div class="local-item">
+                    <a href="{% url 'itens_por_local' local.valor %}" class="local-card" style="background-image: url('/media/locais/Capa.jpg');">
+                        <div class="local-info">{{ local.nome }}</div>
+                    </a>
+                    <img src="/media/locais/{{ local.imagem }}" alt="{{ local.nome }}" class="local-imagem" onclick="mostrarImagem(this)">
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <p><a href="{% url 'logout' %}">Sair</a></p>
+
+
+
+
+
+    <div id="overlay" onclick="fecharImagem()">
+        <img id="imagemExpandida" src="" alt="Imagem Expandida">
+    </div>
+
+    <script src="{% static 'core/script.js' %}"></script>
+
+
 </body>
 </html>

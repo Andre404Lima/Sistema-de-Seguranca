@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.acoes-compra {
+    margin-top: 10px;
+}
+
+.acoes-compra button {
+    margin-bottom: 5px;
+}
+
+.item-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.imagem img {
+    max-width: 200px;
+    height: auto;
+    border-radius: 6px;
+    margin-right: 20px;
+}
+
+.informacoes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.modelo {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.descricao {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.estoques ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.secreto {
+    color: red;
+    font-weight: bold;
+    margin-left: 8px;
+}
+
+.miniatura {
+    max-width: 150px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9); 
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#overlay img {
+    max-width: 90%;
+    max-height: 90%;
+    box-shadow: 0 0 20px #000;
+}

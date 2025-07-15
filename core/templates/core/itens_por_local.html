@@ -1,61 +1,142 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Itens por Local</title>
+    <link rel="stylesheet" href="{% static 'core/local.css' %}">
 </head>
 <body>
-    <h2>Dispositivos</h2>
-    {% if dispositivos_estoque %}
-        <ul>
-            {% for est in dispositivos_estoque %}
-            <li>
-                {% if est.dispositivo.secret %} 
-                    <span style="color:red;">[SECRETO]</span>
-                {% endif %}
-                {{ est.dispositivo.nome }} — Quantidade: {{ est.quantidade }}<br>
-                - {{ est.dispositivo.descricao }}
-            </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nenhum dispositivo encontrado.</p>
-    {% endif %}
+    <h1>Lista de Dispositivos</h1>
+    {% for est in dispositivos_estoque %}
+        <div class="item-card">
+            {% if est.dispositivo.imagem %}
+                <img src="{{ est.dispositivo.imagem.url }}" alt="{{ est.dispositivo.nome }}" class="miniatura" onclick="mostrarImagem(this)">
+            {% else %}
+                <img src="/static/img/sem_imagem.png" alt="Sem imagem">
+            {% endif %}
+            <div class="item-info">
+                <div class="item-nome">
+                    {% if est.dispositivo.secret %}<span class="secret">[SECRETO]</span> {% endif %}
+                    {{ est.dispositivo.nome }}
+                </div>
+                <div class="item-desc">{{ est.dispositivo.descricao }}</div>
+                <div class="item-quant">Quantidade: {{ est.quantidade }}</div>
+                <button type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
+                <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
+                    <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="tipo_item" value="dispositivo">
+                        <input type="hidden" name="item_id" value="{{ est.dispositivo.id }}">
+                        <input type="hidden" name="origem" value="{{ est.localizacao }}">
+                        <label>Qtd:</label>
+                        <input type="number" name="quantidade" min="1" max="{{ est.quantidade }}" required style="width: 60px;">
+                        <label>Destino:</label>
+                        <select name="destino" required>
+                            {% for codigo, nome in localizacoes_visiveis %}
+                                {% if codigo != est.localizacao %}
+                                    <option value="{{ codigo }}">{{ nome }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Enviar</button>
+                        <button type="button" onclick="fecharFormulario('{{ est.id }}')" style="margin-left: 10px;">X</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhum dispositivo disponível neste local.</p>
+    {% endfor %}
+    <h1>Lista de Equipamentos</h1>
+    {% for est in equipamentos_estoque %}
+        <div class="item-card">
+            {% if est.equipamento.imagem %}
+                <img src="{{ est.equipamento.imagem.url }}" alt="{{ est.equipamento.nome }}" class="miniatura" onclick="mostrarImagem(this)">
+            {% else %}
+                <img src="/static/img/sem_imagem.png" alt="Sem imagem">
+            {% endif %}
+            <div class="item-info">
+                <div class="item-nome">
+                    {% if est.equipamento.secret %}<span class="secret">[SECRETO]</span> {% endif %}
+                    {{ est.equipamento.nome }}
+                </div>
+                <div class="item-desc">{{ est.equipamento.descricao }}</div>
+                <div class="item-quant">Quantidade: {{ est.quantidade }}</div>
 
-    <h2>Equipamentos</h2>
-    {% if equipamentos_estoque %}
-        <ul>
-            {% for est in equipamentos_estoque %}
-                <li>
-                    {% if est.equipamento.secret %} 
-                        <span style="color:red;">[SECRETO]</span>
-                    {% endif %}
-                    {{ est.equipamento.nome }} — Quantidade: {{ est.quantidade }}</li><br>
-                    - {{ est.equipamento.descricao }}
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nenhum equipamento encontrado.</p>
-    {% endif %}
+                <button type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
+                <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
+                    <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="tipo_item" value="equipamento">
+                        <input type="hidden" name="item_id" value="{{ est.equipamento.id }}">
+                        <input type="hidden" name="origem" value="{{ est.localizacao }}">
+                        <label>Qtd:</label>
+                        <input type="number" name="quantidade" min="1" max="{{ est.quantidade }}" required style="width: 60px;">
+                        <label>Destino:</label>
+                        <select name="destino" required>
+                            {% for codigo, nome in localizacoes_visiveis %}
+                                {% if codigo != est.localizacao %}
+                                    <option value="{{ codigo }}">{{ nome }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Enviar</button>
+                        <button type="button" onclick="fecharFormulario('{{ est.id }}')" style="margin-left: 10px;">X</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhum dispositivo disponível neste local.</p>
+    {% endfor %}
+    <h1>Lista de Veiculos</h1>
+    {% for est in veiculos_estoque %}
+        <div class="item-card">
+            {% if est.veiculo.imagem %}
+                <img src="{{ est.veiculo.imagem.url }}" alt="{{ est.veiculo.nome }}" class="miniatura" onclick="mostrarImagem(this)">
+            {% else %}
+                <img src="/static/img/sem_imagem.png" alt="Sem imagem">
+            {% endif %}
+            <div class="item-info">
+                <div class="item-nome">
+                    {% if est.veiculo.secret %}<span class="secret">[SECRETO]</span> {% endif %}
+                    {{ est.veiculo.modelo }}
+                </div>
+                <div class="item-desc">{{ est.veiculo.descricao }}</div>
+                <div class="item-quant">Quantidade: {{ est.quantidade }}</div>
 
-    <h2>Veículos</h2>
-    {% if veiculos_estoque %}
-        <ul>
-            {% for est in veiculos_estoque %}
-                <li>
-                    {% if est.veiculo.secret %} 
-                        <span style="color:red;">[SECRETO]</span>
-                    {% endif %}
-                    {{ est.veiculo.tipo }} {{ est.veiculo.modelo }} — Quantidade: {{ est.quantidade }}<br>
-                    - {{ est.veiculo.descricao }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Nenhum veículo encontrado.</p>
-    {% endif %}
+                <button type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
+                <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
+                    <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
+                        {% csrf_token %}
+                        <input type="hidden" name="tipo_item" value="veiculo">
+                        <input type="hidden" name="item_id" value="{{ est.veiculo.id }}">
+                        <input type="hidden" name="origem" value="{{ est.localizacao }}">
+                        <label>Qtd:</label>
+                        <input type="number" name="quantidade" min="1" max="{{ est.quantidade }}" required style="width: 60px;">
+                        <label>Destino:</label>
+                        <select name="destino" required>
+                            {% for codigo, nome in localizacoes_visiveis %}
+                                {% if codigo != est.localizacao %}
+                                    <option value="{{ codigo }}">{{ nome }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Enviar</button>
+                        <button type="button" onclick="fecharFormulario('{{ est.id }}')" style="margin-left: 10px;">X</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Nenhum dispositivo disponível neste local.</p>
+    {% endfor %}
 
-        <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
+    <div id="overlay" onclick="fecharImagem()">
+        <img id="imagemExpandida" src="" alt="Imagem Expandida">
+    </div>
+
+    <script src="{% static 'core/script.js' %}"></script>
 </body>
 </html>

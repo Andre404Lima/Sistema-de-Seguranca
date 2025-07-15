@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Equipamentos</title>
-    <link rel="stylesheet" href="{% static 'core/veiculos.css' %}">
+    <link rel="stylesheet" href="{% static 'core/listas.css' %}">
 </head>
 <body>
     <h1>Lista de Equipamentos</h1>
@@ -21,10 +21,10 @@
             {% endif %}
             <div class="informacoes">
                 <div class="modelo">
-                    <strong>{{ item.obj.nome }}{{ item.obj.modelo }} — Total: {{ item.total }}</strong>
                     {% if item.obj.secret %}
                         <span class="secreto">[SECRETO]</span>
                     {% endif %}
+                    <strong>{{ item.obj.nome }} — Total: {{ item.total }}</strong>
                 </div>
                 <div class="descricao">
                     {{ item.obj.descricao }}
@@ -38,7 +38,7 @@
                                 <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
                                     <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
                                         {% csrf_token %}
-                                        <input type="hidden" name="tipo_item" value="dispositivo">
+                                        <input type="hidden" name="tipo_item" value="equipamento">
                                         <input type="hidden" name="item_id" value="{{ item.obj.id }}">
                                         <input type="hidden" name="origem" value="{{ est.localizacao }}">
                                         <label>Qtd:</label>
