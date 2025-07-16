@@ -1,6 +1,7 @@
 import unicodedata
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from core.models.manutencao import RequisicaoManutencao
 from core.models.requisicao import RequisicaoMovimentacao
 from core.models import Dispositivo, Equipamento, Veiculo
 from core.constants import LOCALIZACAO_CHOICES
@@ -14,12 +15,32 @@ def formatar_nome_imagem(nome):
 
 @login_required
 def dashboard(request):
-    tipo = request.user.user_type
+    user = request.user
+
+    requisicoes_manut = RequisicaoManutencao.objects.filter(
+        status__in=['pendente', 'em_manutencao']
+    )
+    solicitacoes_compra = SolicitacaoCompra.objects.filter(status='pendente')
+    ordens_compra = OrdemCompra.objects.filter(status='autorizada')
+
+    requisicoes_pendentes = []
+
+    for m in requisicoes_manut:
+        requisicoes_pendentes.append({'tipo': 'manutencao', 'obj': m})
+
+    if user.user_type == 'gerente':
+        for s in solicitacoes_compra:
+            requisicoes_pendentes.append({'tipo': 'compra', 'obj': s})
+
+    if user.user_type in ['administrador', 'batman', 'alfred']:
+        for o in ordens_compra:
+            requisicoes_pendentes.append({'tipo': 'ordem', 'obj': o})
+
+    # ordenar por data_criacao ou outro critério se quiser
+    requisicoes_pendentes.sort(key=lambda x: getattr(x['obj'], 'data_criacao', None))
+
     locais_publicos = LOCALIZACAO_CHOICES[:7]
     locais_secretos = LOCALIZACAO_CHOICES[7:]
-    requisicoes_pendentes = []
-    solicitacoes_pendentes = []
-    ordens_pendentes_pagamento = []
 
     locais_publicos_formatados = [{
         'valor': valor,
@@ -27,7 +48,7 @@ def dashboard(request):
         'imagem': formatar_nome_imagem(nome) + '.jpg'
     } for valor, nome in locais_publicos if valor]
 
-    if tipo in ['batman', 'alfred']:
+    if user.user_type in ['batman', 'alfred']:
         locais_secretos_formatados = [{
             'valor': valor,
             'nome': nome,
@@ -36,29 +57,10 @@ def dashboard(request):
     else:
         locais_secretos_formatados = []
 
-    if tipo in ['gerente', 'batman', 'alfred']:
-        requisicoes_pendentes = RequisicaoMovimentacao.objects.filter(status='pendente')
-        for req in requisicoes_pendentes:
-            obj = None
-            if req.tipo_item == 'dispositivo':
-                obj = Dispositivo.objects.filter(id=req.item_id).first()
-            elif req.tipo_item == 'equipamento':
-                obj = Equipamento.objects.filter(id=req.item_id).first()
-            elif req.tipo_item == 'veiculo':
-                obj = Veiculo.objects.filter(id=req.item_id).first()
-            req.item_nome = getattr(obj, 'nome', None) or getattr(obj, 'modelo', None) or "Item desconhecido"
-
-    if tipo == 'gerente':
-        solicitacoes_pendentes = SolicitacaoCompra.objects.filter(status='pendente')
-
-    if tipo in ['administrador', 'batman']:
-        ordens_pendentes_pagamento = OrdemCompra.objects.filter(status='autorizada')
-
     return render(request, 'core/dashboard.html', {
+        'requisicoes_pendentes': requisicoes_pendentes,
+        'user_type': user.user_type,
         'locais_publicos': locais_publicos_formatados,
         'locais_secretos': locais_secretos_formatados,
-        'user_type': tipo,
-        'requisicoes': requisicoes_pendentes,
-        'solicitacoes': solicitacoes_pendentes,
-        'ordens': ordens_pendentes_pagamento,
+        # pode adicionar mais contextos aqui se precisar
     })
