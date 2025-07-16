@@ -10,3 +10,6 @@ from.ordem_de_compra_view import autorizar_solicitacao_compra, negar_solicitacao
 from .manutencao_view import solicitar_manutencao, mover_direto_para_manutencao, concluir_manutencao,aprovar_envio_manutencao, negar_manutencao
 from .criar_item_view import criar_item
 from .editar_item_view import editar_item
+from .create_user_view import controle_usuarios
+from .listar_user_view import usuarios_lista
+from .desativar_user_view import desativar_usuario

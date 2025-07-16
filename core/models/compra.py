@@ -1,5 +1,8 @@
 from django.db import models
-from core.constants import LOCALIZACAO_CHOICES 
+from core.constants import LOCALIZACAO_CHOICES
+from core.models.dispositivo import Dispositivo
+from core.models.equipamento import Equipamento
+from core.models.veiculo import Veiculo 
 from .user import CustomUser
 ITEM_TIPO_CHOICES = (
     ('dispositivo', 'Dispositivo'),
@@ -86,5 +89,17 @@ class OrdemCompra(models.Model):
     def __str__(self):
         nome = self.get_item_nome()
         return f"Ordem #{self.id} - {nome} x{self.quantidade} - {self.status}"
+    
+    @property
+    def nome_item(self):
+        try:
+            if self.tipo_item == 'dispositivo':
+                return Dispositivo.objects.get(id=self.item_id).nome
+            elif self.tipo_item == 'equipamento':
+                return Equipamento.objects.get(id=self.item_id).nome
+            elif self.tipo_item == 'veiculo':
+                return Veiculo.objects.get(id=self.item_id).modelo
+        except:
+            return '[Item não encontrado]'
 
 

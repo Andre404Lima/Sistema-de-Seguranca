@@ -7,7 +7,6 @@ from .models.dispositivo import EstoqueDispositivo
 from .models.equipamento import EstoqueEquipamento  
 from .models.veiculo import EstoqueVeiculo          
 
-# INLINE - Dispositivo
 class EstoqueDispositivoInline(admin.TabularInline):
     model = EstoqueDispositivo
     extra = 1
@@ -15,7 +14,6 @@ class EstoqueDispositivoInline(admin.TabularInline):
 class DispositivoAdmin(admin.ModelAdmin):
     inlines = [EstoqueDispositivoInline]
 
-# INLINE - Equipamento
 class EstoqueEquipamentoInline(admin.TabularInline):
     model = EstoqueEquipamento
     extra = 1
@@ -23,7 +21,6 @@ class EstoqueEquipamentoInline(admin.TabularInline):
 class EquipamentoAdmin(admin.ModelAdmin):
     inlines = [EstoqueEquipamentoInline]
 
-# INLINE - Veículo
 class EstoqueVeiculoInline(admin.TabularInline):
     model = EstoqueVeiculo
     extra = 1
@@ -31,7 +28,6 @@ class EstoqueVeiculoInline(admin.TabularInline):
 class VeiculoAdmin(admin.ModelAdmin):
     inlines = [EstoqueVeiculoInline]
 
-# Registro no admin
 admin.site.register(Equipamento, EquipamentoAdmin)
 admin.site.register(Veiculo, VeiculoAdmin)
 admin.site.register(CustomUser)

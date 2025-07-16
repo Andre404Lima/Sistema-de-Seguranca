@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from core.models import Dispositivo, Equipamento, Veiculo
+from core.models.acao_user import AcaoUsuario
 from core.models.dispositivo import EstoqueDispositivo
 from core.models.equipamento import EstoqueEquipamento
 from core.models.veiculo import EstoqueVeiculo
@@ -22,7 +23,7 @@ def solicitar_movimentacao(request):
             origem = requisicao.origem
             destino = requisicao.destino
             qtd = requisicao.quantidade
-            # Mapeamento dinâmico de tipo -> modelo e estoque
+
             MODELOS = {
                 'dispositivo': (Dispositivo, EstoqueDispositivo, 'dispositivo'),
                 'equipamento': (Equipamento, EstoqueEquipamento, 'equipamento'),
@@ -34,7 +35,6 @@ def solicitar_movimentacao(request):
 
             modelo, estoque_modelo, fk_nome = MODELOS[tipo]
             objeto = get_object_or_404(modelo, id=objeto_id)
-
             filtro_base = {f'{fk_nome}_id': objeto_id}
 
             try:
@@ -44,37 +44,34 @@ def solicitar_movimentacao(request):
                     messages.error(request, 'Quantidade insuficiente no estoque de origem.')
                     return redirect('dashboard')
 
-                if request.user.user_type in ['batman', 'alfred', 'gerente']:
+                if request.user.user_type in ['batman', 'alfred', 'gerente', 'administrador']:
                     estoque_destino, _ = estoque_modelo.objects.get_or_create(
                         **filtro_base, localizacao=destino,
                         defaults={'quantidade': 0}
                     )
 
-                    # Atualiza estoques
                     estoque_origem.quantidade -= qtd
                     estoque_destino.quantidade += qtd
                     estoque_origem.save()
                     estoque_destino.save()
 
-                    requisicao.status = 'autorizada' if request.user.user_type in ['batman', 'alfred', 'gerente'] else 'pendente'
+                    requisicao.status = 'autorizada'
                     requisicao.save()
 
                     messages.success(request, 'Movimentação registrada com sucesso.')
                 else:
-                    # USUÁRIO COMUM = só cria requisição pendente
                     requisicao.status = 'pendente'
                     requisicao.save()
+
                     messages.info(request, 'Requisição registrada e enviada para aprovação.')
+
                 return redirect('dashboard')
 
             except estoque_modelo.DoesNotExist:
                 messages.error(request, 'Estoque de origem não encontrado.')
-
-    else:
-        form = RequisicaoMovimentacaoForm()
-
-    return redirect('dashboard')
+                return redirect('dashboard')
 #-------------------------autorizarMovimentacao---------------------------------------------------
+
 @login_required
 def autorizar_requisicao(request, req_id):
     user = request.user
@@ -123,6 +120,11 @@ def autorizar_requisicao(request, req_id):
     requisicao.autorizador = user 
     requisicao.save()
 
+    AcaoUsuario.objects.create(
+        usuario=user,
+        acao=f"Aprovou movimentação de {qtd} {tipo}(s) de {origem} para {destino} (ID do item: {item_id})"
+    )
+
     messages.success(request, "Requisição autorizada com sucesso.")
     return redirect('dashboard')
 #-------------------------negarMovimentacao---------------------------------------------------
@@ -135,8 +137,9 @@ def rejeitar_requisicao(request, pk):
     requisicao = get_object_or_404(RequisicaoMovimentacao, pk=pk)
     if requisicao.status == 'pendente':
         requisicao.status = 'rejeitada'
-        requisicao.autorizador = request.user  # corrigido aqui
+        requisicao.autorizador = request.user
         requisicao.save()
         messages.info(request, "Requisição rejeitada.")
     
     return redirect('dashboard')
+

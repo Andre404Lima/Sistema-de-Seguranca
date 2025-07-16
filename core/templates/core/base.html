@@ -1,14 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>Indústrias Wayne</title>
-    <link rel="stylesheet" href="{% static 'core/estilo.css' %}">
+    <link rel="stylesheet" href="{% static 'core/usuarios.css' %}">
 </head>
 <body>
     <header>
         <h1>Indústrias Wayne</h1>
-        <p>Usuário: {{ request.user.username }} | Cargo: {{ request.user.get_user_type_display }}</p>
+        <p class="user">Usuário: {{ request.user.username }} | Cargo: {{ request.user.get_user_type_display }}</p>
         <hr>
     </header>
 
@@ -17,4 +18,11 @@
         {% endblock %}
     </main>
 </body>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2025 Indústrias Wayne. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
 </html>
