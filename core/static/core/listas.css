@@ -1,62 +1,137 @@
 body {
     font-family: Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
     padding: 20px;
-    background-color: #f4f4f4;
+    margin: 0;
+    background-color: #000000; 
+    color: #ffffff;
 }
 
 h1, h2 {
-    color: #333;
+    color: #ffffff;
+    margin-bottom: 15px;
 }
 
-.acoes-compra {
-    margin-top: 10px;
+.top-card {
+    position: relative;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    padding: 15px 20px;
+    margin-bottom: 50px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 2px #00ffffaa;
+    color: #ffffff;
+    overflow: hidden;
+}
+body.dispositivo .top-card {
+    background-image: url('/media/dispositivos/card.jpg');
 }
 
-.acoes-compra button {
-    margin-bottom: 5px;
+body.veiculo .top-card {
+    background-image: url('/media/veiculos/card.jpg');
+}
+
+body.equipamento .top-card {
+    background-image: url('/media/equipamentos/card.jpg');
 }
 
 .item-card {
     display: flex;
-    align-items: center;
-    background: white;
-    margin-bottom: 20px;
+    align-items: flex-start;
     padding: 15px;
+    margin-bottom: 50px;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px 2px #00ffffaa;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: relative;
 }
 
-.imagem img {
-    max-width: 200px;
-    height: auto;
-    border-radius: 6px;
+body.dispositivo .item-card {
+    background-image: url('/media/dispositivos/card.jpg');
+}
+
+body.veiculo .item-card {
+    background-image: url('/media/veiculos/card.jpg');
+}
+
+body.equipamento .item-card {
+    background-image: url('/media/equipamentos/card.jpg');
+}
+
+.item-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+.item-card .imagem {
+    flex-shrink: 0;
     margin-right: 20px;
 }
 
-.informacoes {
+.item-card .imagem img {
+    max-width: 250px;
+    border-radius: 6px;
+    border: 1px solid #00ffff;
+    transition: transform 0.3s ease;
+}
+
+.item-card:hover,
+.top-card:hover {
+    transform: translateY(-4px);
+    box-shadow:
+        0 6px 12px rgba(0, 255, 255, 0.5),
+        0 0 15px rgba(0, 255, 255, 0.4),
+        0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.item-card .imagem img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #00ffffcc;
+    cursor: pointer;
+}
+
+.item-card .informacoes {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 10px;
 }
 
 .modelo {
-    font-size: 18px;
-    margin-bottom: 8px;
+    font-size: 22px;
+    color: #ffffff;
+    max-width: 500px;
+    height: 50px;
 }
 
 .descricao {
-    font-size: 14px;
-    margin-bottom: 8px;
-    color: #555;
+    font-size: 18px;
+    color: #ffffff;
+    max-width: 500px;
+    max-height: 100px;
+}
+.botao_mover {
+    margin-left: 10px;
+}
+.estoques {
+    max-height: 100px;
+    max-width: 450px;
+    overflow-y: auto;
 }
 
 .estoques ul {
     margin: 0;
     padding-left: 20px;
+    color: #ffffff;
 }
 
 .secreto {
-    color: red;
+    color: #ff5555;
     font-weight: bold;
     margin-left: 8px;
 }
@@ -67,13 +142,50 @@ h1, h2 {
     transition: transform 0.2s;
 }
 
+.botao-compra {
+    background-color: #00cccc;
+    color: #000000;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: bold;
+    box-shadow: 0 0 5px #00ccccaa;
+}
+
+.botao-compra:hover {
+    background-color: #009999;
+    color: #ffffff;
+    box-shadow: 0 0 10px #00ffff;
+}
+
+.botoes-verticais {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    margin-left: 20px;
+}
+
+.botoes-verticais form {
+    margin: 0;
+}
+
+.botoes-verticais form button {
+    margin: 0;
+}
+
 #overlay {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9); 
+    background-color: rgba(0, 0, 0, 0.9);
     justify-content: center;
     align-items: center;
     z-index: 9999;
@@ -82,5 +194,5 @@ h1, h2 {
 #overlay img {
     max-width: 90%;
     max-height: 90%;
-    box-shadow: 0 0 20px #000;
+    box-shadow: 0 0 20px #00ffff;
 }

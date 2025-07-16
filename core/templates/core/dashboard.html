@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>DashBoard - Indústrias Wayne -</title>
-        <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
 </head>
 <body>
     <h1>Bem-vindo, {{ user.username }}!</h1>
@@ -17,48 +17,46 @@
         {% endfor %}
     {% endif %}
 
-    {% if requisicoes %}
-        <h2>Requisições Pendentes</h2>
-        <ul>
-            {% for req in requisicoes %}
+    {% if requisicoes_pendentes %}
+    <h2>Requisições Pendentes</h2>
+    <ul>
+    {% for item in requisicoes_pendentes %}
+        {% if item.tipo == 'manutencao' %}
+            {% with req=item.obj %}
                 <li>
-                    {{ req.quantidade }} {{ req.item_nome }}(s)
-                    {% if req.origem %} de {{ req.origem }}{% endif %} para {{ req.destino }}
-                    — Solicitado por {{ req.solicitante.username }}
-                    <a href="{% url 'autorizar_requisicao' req.id %}">[Aprovar]</a>
-                    <a href="{% url 'rejeitar_requisicao' req.id %}">[Rejeitar]</a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+                    {{ req.quantidade }} {{ req.get_tipo_item_display }} {{ req.get_item_nome }} 
+                    de {{ req.localizacao }} — Solicitado por {{ req.criado_por.username }} — Status: {{ req.status }}
 
-    {% if user_type == 'gerente' and solicitacoes %}
-        <h2>Solicitações de Compra Pendentes</h2>
-        <ul>
-            {% for sol in solicitacoes %}
+                    {% if user.user_type == 'gerente' and req.status == 'pendente' %}
+                        <a href="{% url 'aprovar_envio_manutencao' req.id %}">[Aprovar Envio]</a>
+                        <a href="{% url 'negar_manutencao' req.id %}">[Negar]</a>
+                    {% elif user.user_type in 'administrador batman alfred' and req.status == 'em_manutencao' %}
+                        <a href="{% url 'concluir_manutencao' req.id %}">[Concluir Manutenção]</a>
+                    {% endif %}
+                </li>
+                {% endwith %}
+            {% elif item.tipo == 'compra' %}
+                {% with sol=item.obj %}
                 <li>
                     Solicitações de Compra de {{ sol.quantidade }} unidades de {{ sol.nome_item }} para {{ sol.destino }} — por {{ sol.criado_por.username }}
                     <a href="{% url 'autorizar_solicitacao' sol.id %}">[Autorizar]</a>
                     <a href="{% url 'negar_solicitacao' sol.id %}">[Negar]</a>
                 </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if user_type in 'administrador,batman,alfred' and ordens %}
-        <h2>Ordens de Compra para Pagamento</h2>
-        <ul>
-            {% for ordem in ordens %}
+                {% endwith %}
+            {% elif item.tipo == 'ordem' %}
+                {% with ordem=item.obj %}
                 <li>
                     Ordem #{{ ordem.id }}: {{ ordem.quantidade }}x {{ ordem.tipo_item }} → {{ ordem.destino }}
-                    {% if user_type == 'alfred' and ordem.destino|slice:":7" != "SECRETO" %}
+                    {% if user.user_type == 'alfred' and ordem.destino|slice:":7" != "SECRETO" %}
                         (restrito)
                     {% else %}
                         <a href="{% url 'pagar_ordem' ordem.id %}">[Pagar]</a>
                         <a href="{% url 'negar_ordem' ordem.id %}">[Negar]</a>
                     {% endif %}
                 </li>
-            {% endfor %}
+                {% endwith %}
+            {% endif %}
+        {% endfor %}
         </ul>
     {% endif %}
 
@@ -101,6 +99,7 @@
             </div>
         {% endfor %}
     </div>
+
     {% if locais_secretos %}
         <h3>Locais Secretos</h3>
         <div class="locais-container">
@@ -114,18 +113,14 @@
             {% endfor %}
         </div>
     {% endif %}
+
     <p><a href="{% url 'logout' %}">Sair</a></p>
-
-
-
-
 
     <div id="overlay" onclick="fecharImagem()">
         <img id="imagemExpandida" src="" alt="Imagem Expandida">
     </div>
 
     <script src="{% static 'core/script.js' %}"></script>
-
 
 </body>
 </html>

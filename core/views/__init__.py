@@ -7,3 +7,6 @@ from .local_view import itens_por_local
 from .movimentacao_view import solicitar_movimentacao, autorizar_requisicao, rejeitar_requisicao
 from .solicitar_compra_view import solicitar_compra
 from.ordem_de_compra_view import autorizar_solicitacao_compra, negar_solicitacao_compra, criar_ordem_compra_direta, pagar_ordem_compra, negar_ordem_compra
+from .manutencao_view import solicitar_manutencao, mover_direto_para_manutencao, concluir_manutencao,aprovar_envio_manutencao, negar_manutencao
+from .criar_item_view import criar_item
+from .editar_item_view import editar_item

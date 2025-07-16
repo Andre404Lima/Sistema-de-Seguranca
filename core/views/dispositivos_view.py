@@ -54,4 +54,5 @@ def lista_dispositivos(request):
     return render(request, 'core/lista_dispositivos.html', {
         'dispositivos': dispositivos_com_dados,
         'localizacoes_visiveis': locais_visiveis,
+        'tipo_item': 'dispositivo'
     })

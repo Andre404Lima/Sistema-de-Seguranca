@@ -55,4 +55,5 @@ def lista_veiculos(request):
     return render(request, 'core/lista_veiculos.html', {
         'veiculos': veiculos_com_dados,
         'localizacoes_visiveis': locais_visiveis,
+        'tipo_item': 'veiculo'
     })

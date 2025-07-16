@@ -75,9 +75,13 @@ class OrdemCompra(models.Model):
 
     def get_item_nome(self):
         obj = self.get_item_obj()
-        if obj:
+        if not obj:
+            return str(self.item_id)
+        
+        if self.tipo_item == 'veiculo':
+            return getattr(obj, 'modelo', str(self.item_id))
+        else:
             return getattr(obj, 'nome', str(self.item_id))
-        return str(self.item_id)
 
     def __str__(self):
         nome = self.get_item_nome()

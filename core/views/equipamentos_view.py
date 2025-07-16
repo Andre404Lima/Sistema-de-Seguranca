@@ -55,4 +55,5 @@ def lista_equipamentos(request):
     return render(request, 'core/lista_equipamentos.html', {
         'equipamentos': equipamentos_com_dados,
         'localizacoes_visiveis': locais_visiveis,
+        'tipo_item': 'equipamento'
     })

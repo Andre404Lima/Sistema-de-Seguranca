@@ -20,6 +20,12 @@ urlpatterns = [
     path('criar-ordem-compra/', views.criar_ordem_compra_direta, name='criar_ordem_compra'),
     path('pagar-ordem/<int:ordem_id>/', views.pagar_ordem_compra, name='pagar_ordem'),
     path('negar-ordem/<int:ordem_id>/', views.negar_ordem_compra, name='negar_ordem'),
+    path('manutencao/solicitar/', views.solicitar_manutencao, name='solicitar_manutencao'),
+    path('manutencao/aprovar/<int:manutencao_id>/', views.aprovar_envio_manutencao, name='aprovar_envio_manutencao'),
+    path('manutencao/negar/<int:manutencao_id>/', views.negar_manutencao, name='negar_manutencao'),
+    path('manutencao/concluir/<int:manutencao_id>/', views.concluir_manutencao, name='concluir_manutencao'),
+    path('criar/<str:tipo>/', views.criar_item, name='criar_item'),
+    path('editar/<str:tipo>/<int:pk>/', views.editar_item, name='editar_item'),
 ] 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
