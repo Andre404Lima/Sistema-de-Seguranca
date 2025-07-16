@@ -15,7 +15,7 @@ h1, h2 {
 
 .top-card {
     position: relative;
-    background-image: url('/media/dispositivos/card.jpg');
+    background-image: url('/media/waynecard.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -234,6 +234,25 @@ h1, h2 {
 }
 
 .botoes-verticais form button {
+    margin: 0;
+}
+
+.footer {
+    background-color: #222d31; 
+    padding: 15px 20px;
+    text-align: center;
+    color: #1df0de; 
+    font-size: 0.9rem;
+    border-radius: 0 0 12px 12px;
+    box-shadow:
+        0 -4px 8px rgba(29, 240, 222, 0.25),
+        0 0 15px rgba(29, 240, 222, 0.2);
+    margin-top: 40px;
+    user-select: none;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-content p {
     margin: 0;
 }
 

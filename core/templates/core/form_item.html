@@ -5,33 +5,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ titulo }}</title>
+    <link rel="stylesheet" href="{% static 'core/estilo_itens.css' %}">
 </head>
 <body>
-    <h1>{{ titulo }}</h1>
 
-    {% if form.errors %}
-        <div class="erros-formulario" style="color: red; margin-bottom: 1em;">
-            <strong>Por favor corrija os erros abaixo:</strong>
-            <ul>
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <li>{{ field.label }}: {{ error }}</li>
+    <div class="card formulario-card">
+        <h1>{{ titulo }}</h1>
+
+        {% if form.errors %}
+            <div class="erros-formulario">
+                <strong>Por favor corrija os erros abaixo:</strong>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
                     {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-        <a href="{% url 'dashboard' %}" style="margin-left: 10px;">Cancelar</a>
-    </form>
+        <form method="post" enctype="multipart/form-data" class="formulario-itens">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="botoes-formulario">
+                <button type="submit" class="botao-salvar">Salvar</button>
+                <a href="{% url 'dashboard' %}" class="botao-cancelar">Cancelar</a>
+            </div>
+        </form>
 
-    <p><a href="{% url 'dashboard' %}">← Voltar ao Dashboard</a></p>
+        <p><a href="{% url 'dashboard' %}" class="link-voltar">← Voltar ao Dashboard</a></p>
+    </div>
+
 </body>
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2025 Indústrias Wayne. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
 </html>

@@ -33,7 +33,6 @@ def lista_dispositivos(request):
                 if est.localizacao not in LOCALIZACOES_SECRETAS
             ]
 
-        # Filtrar estoques com quantidade > 0
         estoques_visiveis = [est for est in estoques_visiveis if est.quantidade > 0]
 
         estoques_visiveis.sort(

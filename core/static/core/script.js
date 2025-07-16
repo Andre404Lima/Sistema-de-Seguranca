@@ -35,3 +35,5 @@ function fecharFormularioManutencao(tipo, id) {
     const form = document.getElementById(`form-manutencao-${tipo}-${id}`);
     if (form) form.style.display = 'none';
 }
+
+

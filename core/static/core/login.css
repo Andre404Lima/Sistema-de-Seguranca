@@ -1,0 +1,124 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f111a;
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('/media/fundo_login.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.login-container {
+    background-color: #222d31;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow:
+        0 4px 8px rgba(29, 240, 222, 0.25),
+        0 0 15px rgba(29, 240, 222, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    background-image: url('/media/card_login.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+h1 {
+    margin-bottom: 25px;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: #ffffff;
+}
+
+.mensagens {
+    margin-bottom: 20px;
+}
+
+.mensagem-erro {
+    color: #f44336;
+    font-weight: 600;
+    margin: 5px 0;
+    text-align: left;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    text-align: left;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color: #ffffff;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #1df0de;
+    background-color: #0f111a;
+    color: #ffffff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #0acfc7;
+    box-shadow:
+        0 0 8px #0acfc7;
+}
+
+.btn-entrar {
+    background-color: #1df0de;
+    color: #0f111a;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-entrar:hover {
+    background-color: #0acfc7;
+}
+
+.footer {
+    background-color: #222d31; 
+    padding: 15px 20px;
+    text-align: center;
+    color: #1df0de; 
+    font-size: 0.9rem;
+    border-radius: 0 0 12px 12px;
+    box-shadow:
+        0 -4px 8px rgba(29, 240, 222, 0.25),
+        0 0 15px rgba(29, 240, 222, 0.2);
+    margin-top: 40px;
+    user-select: none;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-content p {
+    margin: 0;
+}

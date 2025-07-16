@@ -1,0 +1,141 @@
+body{
+    background-color: #0f111a;
+    background-image: url('/media/controle_fundo.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.user{
+    color: #ffffff;
+}
+
+.usuarios-container {
+    padding: 20px;
+    color: #ffffff;
+    background-color: #0f111a;
+    font-family: 'Segoe UI', sans-serif;
+    background-image: url('/media/controle_fundo.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+.botao-criar-usuario {
+    background-color: #1df0de;
+    color: #0f111a;
+    font-weight: bold;
+    padding: 10px 18px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+    margin: 15px 0 30px 0;
+    transition: background-color 0.3s ease;
+}
+
+.botao-criar-usuario:hover {
+    background-color: #0acfc7;
+}
+
+.lista-usuarios {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+
+.lista-usuarios li {
+    background-color: #222d31;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(29, 240, 222, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.usuario-info {
+    font-weight: 500;
+}
+
+.form-desativar {
+    margin: 0;
+}
+
+.botao-desativar {
+    background: none;
+    border: none;
+    color: #f44336;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    transition: color 0.2s ease;
+}
+
+.botao-desativar:hover {
+    color: #ff7a7a;
+}
+
+.nenhum-usuario,
+.nenhuma-acao {
+    color: #aaaaaa;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.grupo-cargo {
+    margin-bottom: 20px;
+}
+
+.lista-acoes {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.lista-acoes li {
+    padding: 6px 0;
+    border-bottom: 1px solid #1df0de22;
+    font-size: 15px;
+}
+
+.voltar-dashboard {
+    margin-top: 40px;
+}
+
+.link-voltar {
+    text-decoration: none;
+    color: #1df0de;
+    font-weight: bold;
+    font-size: 15px;
+    transition: color 0.3s ease;
+}
+
+.link-voltar:hover {
+    color: #0acfc7;
+}
+
+.footer {
+    background-color: #222d31; /* Mesma cor do card */
+    padding: 15px 20px;
+    text-align: center;
+    color: #1df0de; /* tom de azul/ciano do layout */
+    font-size: 0.9rem;
+    border-radius: 0 0 12px 12px;
+    box-shadow:
+        0 -4px 8px rgba(29, 240, 222, 0.25),
+        0 0 15px rgba(29, 240, 222, 0.2);
+    margin-top: 40px;
+    user-select: none;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-content p {
+    margin: 0;
+}

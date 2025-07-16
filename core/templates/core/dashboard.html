@@ -8,61 +8,89 @@
     <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
 </head>
 <body>
-    <h1>Bem-vindo, {{ user.username }}!</h1>
-    <p>Seu Cargo é: {{ user.get_user_type_display }}</p>
+    <div class="card saudacao-card">
+        <h1>Bem-vindo, {{ user.username }}!</h1>
+        <p>Seu Cargo é: {{ user.get_user_type_display }}</p>
+    </div>
 
+    <!-- Mensagens -->
     {% if messages %}
+    <div class="card mensagem-card">
         {% for message in messages %}
-            <p style="color:red;">{{ message }}</p>
+            <p class="mensagem-erro">{{ message }}</p>
         {% endfor %}
+    </div>
     {% endif %}
 
+    <!-- Requisições Pendentes -->
     {% if requisicoes_pendentes %}
-    <h2>Requisições Pendentes</h2>
-    <ul>
-    {% for item in requisicoes_pendentes %}
-        {% if item.tipo == 'manutencao' %}
-            {% with req=item.obj %}
-                <li>
-                    {{ req.quantidade }} {{ req.get_tipo_item_display }} {{ req.get_item_nome }} 
-                    de {{ req.localizacao }} — Solicitado por {{ req.criado_por.username }} — Status: {{ req.status }}
-
-                    {% if user.user_type == 'gerente' and req.status == 'pendente' %}
-                        <a href="{% url 'aprovar_envio_manutencao' req.id %}">[Aprovar Envio]</a>
-                        <a href="{% url 'negar_manutencao' req.id %}">[Negar]</a>
-                    {% elif user.user_type in 'administrador batman alfred' and req.status == 'em_manutencao' %}
-                        <a href="{% url 'concluir_manutencao' req.id %}">[Concluir Manutenção]</a>
-                    {% endif %}
-                </li>
+    <div class="card requisicoes-card">
+        <h2>Requisições Pendentes</h2>
+        <ul>
+        {% for item in requisicoes_pendentes %}
+            {% if item.tipo == 'manutencao' %}
+                {% with req=item.obj %}
+                    <li>
+                        Manutenção de {{ req.quantidade }} {{ req.get_tipo_item_display }} {{ req.get_item_nome }} 
+                        de {{ req.localizacao }} — Solicitado por {{ req.criado_por.username }} — Status: {{ req.status }}
+                        {% if user.user_type == 'gerente' and req.status == 'pendente' %}
+                            <a href="{% url 'aprovar_envio_manutencao' req.id %}">[Aprovar Envio]</a>
+                            <a href="{% url 'negar_manutencao' req.id %}">[Negar]</a>
+                        {% elif user.user_type == 'administrador' or user.user_type == 'batman' or user.user_type == 'alfred' and req.status == 'em_manutencao' %}
+                            <a href="{% url 'concluir_manutencao' req.id %}">[Concluir Manutenção]</a>
+                        {% endif %}
+                    </li>
                 {% endwith %}
             {% elif item.tipo == 'compra' %}
                 {% with sol=item.obj %}
                 <li>
-                    Solicitações de Compra de {{ sol.quantidade }} unidades de {{ sol.nome_item }} para {{ sol.destino }} — por {{ sol.criado_por.username }}
-                    <a href="{% url 'autorizar_solicitacao' sol.id %}">[Autorizar]</a>
-                    <a href="{% url 'negar_solicitacao' sol.id %}">[Negar]</a>
+                    Solicitações de Compra de {{ sol.quantidade }} unidades de {{ sol.nome_item }} para {{ sol.destino }} — por {{ sol.criado_por.username }} — Status: {{ sol.status }}
+                    {% if user.user_type == 'gerente' or user.user_type == 'batman' or user.user_type == 'alfred' or user.user_type == 'administrador' %}
+                        <a href="{% url 'autorizar_solicitacao' sol.id %}">[Autorizar]</a>
+                        <a href="{% url 'negar_solicitacao' sol.id %}">[Negar]</a>
+                    {% endif %}
                 </li>
                 {% endwith %}
             {% elif item.tipo == 'ordem' %}
                 {% with ordem=item.obj %}
-                <li>
-                    Ordem #{{ ordem.id }}: {{ ordem.quantidade }}x {{ ordem.tipo_item }} → {{ ordem.destino }}
-                    {% if user.user_type == 'alfred' and ordem.destino|slice:":7" != "SECRETO" %}
-                        (restrito)
-                    {% else %}
-                        <a href="{% url 'pagar_ordem' ordem.id %}">[Pagar]</a>
-                        <a href="{% url 'negar_ordem' ordem.id %}">[Negar]</a>
+                    {% if ordem.status != 'paga' %}
+                    <li>
+                        Ordem #{{ ordem.id }}: {{ ordem.quantidade }}x {{ ordem.nome_item }} → {{ ordem.destino }} — Status: {{ ordem.status }}
+                        {% if user.user_type == 'alfred' and ordem.destino|slice:":7" != "SECRETO" %}
+                            (restrito)
+                        {% else %}
+                            {% if user.user_type == 'batman' or user.user_type == 'alfred' or user.user_type == 'administrador' %}
+                                {% if ordem.status == 'autorizada' %}
+                                    <a href="{% url 'pagar_ordem' ordem.id %}">[Pagar]</a>
+                                {% endif %}
+                                <a href="{% url 'negar_ordem' ordem.id %}">[Negar]</a>
+                            {% endif %}
+                        {% endif %}
+                    </li>
                     {% endif %}
-                </li>
+                {% endwith %}
+            {% elif item.tipo == 'movimentacao' %}
+                {% with mov=item.obj %}
+                    <li>
+                        Movimentação de {{ mov.quantidade }} de <strong>{{ mov.nome_item }}</strong>
+                        de <em>{{ mov.origem }}</em> para <em>{{ mov.destino }}</em> —
+                        Solicitado por {{ mov.solicitante.username }} —
+                        Status: {{ mov.status }}
+                        {% if user.user_type == 'gerente' or user.user_type == 'batman' or user.user_type == 'alfred' or user.user_type == 'administrador' and mov.status == 'pendente' %}
+                            <a href="{% url 'autorizar_requisicao' mov.id %}">[Autorizar]</a>
+                            <a href="{% url 'rejeitar_requisicao' mov.id %}">[Negar]</a>
+                        {% endif %}
+                    </li>
                 {% endwith %}
             {% endif %}
         {% endfor %}
         </ul>
+    </div>
     {% endif %}
 
+    <!-- Itens (Dispositivos, Equipamentos, Veículos) -->
     <h2>Itens</h2>
     <div class="itens-container">
-
         <a href="{% url 'lista_dispositivos' %}" class="item-card-link">
             <div class="item-card" style="background-image: url('/media/dispositivos/Capa.jpg');">
                 <div class="item-info">
@@ -88,6 +116,7 @@
         </a>
     </div>
 
+    <!-- Locais Públicos -->
     <h2>Localizações</h2>
     <div class="locais-container">
         {% for local in locais_publicos %}
@@ -100,6 +129,7 @@
         {% endfor %}
     </div>
 
+    <!-- Locais Secretos -->
     {% if locais_secretos %}
         <h3>Locais Secretos</h3>
         <div class="locais-container">
@@ -114,7 +144,13 @@
         </div>
     {% endif %}
 
-    <p><a href="{% url 'logout' %}">Sair</a></p>
+    <!-- controle de usuario -->
+<div class="card-inf">
+    {% if pode_criar_user %}
+        <a href="{% url 'controle_usuarios' %}" class="botao-card-inf">Controle de Usuário</a>
+    {% endif %}
+        <a href="{% url 'logout' %}" class="botao-card-inf">Sair</a>
+</div>
 
     <div id="overlay" onclick="fecharImagem()">
         <img id="imagemExpandida" src="" alt="Imagem Expandida">
@@ -123,4 +159,11 @@
     <script src="{% static 'core/script.js' %}"></script>
 
 </body>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2025 Indústrias Wayne. Todos os direitos reservados.</p>
+    </div>
+</footer>
+
 </html>

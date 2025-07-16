@@ -9,7 +9,7 @@ LOCALIZACOES_SECRETAS = [
     'POSTO_AVANCADO_NORTE',
     'ESTACAO_SUBMERSA_PORTO'
 ]
-#---------------------------Veiculos-----------------------------------------------
+#-----------------------------Veiculos-----------------------------------------------
 @login_required
 def lista_veiculos(request):
     base_qs = Veiculo.objects.prefetch_related('estoques').order_by('secret', 'modelo')
@@ -33,7 +33,6 @@ def lista_veiculos(request):
                 if est.localizacao not in LOCALIZACOES_SECRETAS
             ]
 
-        # Filtrar estoques com quantidade > 0
         estoques_visiveis = [est for est in estoques_visiveis if est.quantidade > 0]
 
         estoques_visiveis = sorted(

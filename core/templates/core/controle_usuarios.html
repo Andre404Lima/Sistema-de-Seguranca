@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="usuarios-container">
+    <h1>Controle de Usuários</h1>
+
+    <a href="{% url 'controle_usuarios' %}" class="botao-criar-usuario">Criar Usuário</a>
+
+    <div class="secao-usuarios">
+        <h2>Lista de Usuários</h2>
+        <ul class="lista-usuarios">
+            {% for user in usuarios %}
+                <li>
+                    <span class="usuario-info">{{ user.username }} - {{ user.get_user_type_display }}</span>
+                    <form action="{% url 'desativar_usuario' user.id %}" method="post" class="form-desativar">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Tem certeza que deseja desativar este usuário?');" class="botao-desativar">
+                            Desativar
+                        </button>
+                    </form>
+                </li>
+            {% empty %}
+                <li class="nenhum-usuario">Nenhum usuário encontrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="secao-acoes">
+        <h2>Últimas Ações por Cargo</h2>
+        {% if acoes_por_cargo %}
+            {% for cargo, acoes in acoes_por_cargo.items %}
+                <div class="grupo-cargo">
+                    <h3>{{ cargo|capfirst }}</h3>
+                    <ul class="lista-acoes">
+                        {% for acao in acoes %}
+                            <li>{{ acao.data_hora|date:"d/m/Y H:i" }} — <strong>{{ acao.usuario_nome }}</strong> — {{ acao.acao }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="nenhuma-acao">Nenhuma ação recente disponível.</p>
+        {% endif %}
+    </div>
+
+    <div class="voltar-dashboard">
+        <a href="{% url 'dashboard' %}" class="link-voltar">← Voltar ao Dashboard</a>
+    </div>
+</div>
+{% endblock %}

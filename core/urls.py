@@ -26,7 +26,9 @@ urlpatterns = [
     path('manutencao/concluir/<int:manutencao_id>/', views.concluir_manutencao, name='concluir_manutencao'),
     path('criar/<str:tipo>/', views.criar_item, name='criar_item'),
     path('editar/<str:tipo>/<int:pk>/', views.editar_item, name='editar_item'),
-] 
+    path('usuarios/', views.controle_usuarios, name='controle_usuarios'),
+    path('usuarios/desativar/<int:user_id>/', views.desativar_usuario, name='desativar_usuario'),
+    path('usuarios/', views.usuarios_lista, name='usuarios_lista'),
+]
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-

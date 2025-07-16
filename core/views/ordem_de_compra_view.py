@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from core.form import OrdemCompraForm
+from core.models.acao_user import AcaoUsuario
 from core.models.compra import SolicitacaoCompra, OrdemCompra
 from core.models.dispositivo import Dispositivo, EstoqueDispositivo
 from core.models.equipamento import Equipamento, EstoqueEquipamento
@@ -104,7 +105,6 @@ def criar_ordem_compra_direta(request):
             ordem.status = 'autorizada'
             ordem.save()
 
-            # Se já for administrador, a ordem será paga automaticamente
             if user.user_type in ['administrador', 'batman', 'alfred']:
                 ordem.status = 'paga'
                 ordem.realizado_por = user
@@ -147,6 +147,12 @@ def pagar_ordem_compra(request, ordem_id):
     ordem.realizado_por = user
     ordem.data_realizacao = timezone.now()
     ordem.save()
+
+    AcaoUsuario.objects.create(
+        usuario=request.user,
+        acao=f'Ordem de compra #{ordem.id} paga.',
+        data_hora=timezone.now()
+    )
 
     item = get_item_obj(ordem.tipo_item, ordem.item_id)
     if item and atualizar_estoque(ordem.tipo_item, item, ordem.destino, ordem.quantidade):
