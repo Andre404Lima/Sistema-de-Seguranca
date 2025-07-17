@@ -26,6 +26,7 @@ Admin: Django Admin para gerenciamento interno
 ✅ Controle de usuários e monitoramento das últimas ações por tipo de usuário
 
 🚀 Futuras melhorias
+
 🚧 Implementar controle de permissões com base em grupos personalizados
 
 🚧 Melhorar interface visual com framework front-end (ex: Bootstrap ou Tailwind)
@@ -104,15 +105,24 @@ pip install django mysqlclient
 Edite o arquivo projeto_final/settings.py e configure a seção DATABASES:
 
 DATABASES = {
+    
     'default': {
+    
         'ENGINE': 'django.db.backends.mysql',
+        
         'NAME': 'wayne_security',
+        
         'USER': 'root',
+        
         'PASSWORD': 'sua_senha',
+        
         'HOST': 'localhost',
+        
         'PORT': '3306',
     }
+    
 }
+
 
 5️⃣ Execute as migrações
 
