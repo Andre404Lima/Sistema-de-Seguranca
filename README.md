@@ -128,25 +128,44 @@ Abra os endereços:
 
 
 http://127.0.0.1:8000/admin/
+
+
 login: batman 
+
 senha: 123456
+
 http://127.0.0.1:8000/login/
 
 users 
+
 funcionario: 
+
 login: andre
+
 senha: 123456
+
 gerente: 
+
 login: gerente
+
 senha: 123456
-administradoro: 
+
+administrador: 
+
 login: admin
+
 senha: 123456
+
 batman: 
+
 login: batman 
+
 senha: 123456
+
 alfred:
+
 login: alfred
+
 senha: 123456
 
 
