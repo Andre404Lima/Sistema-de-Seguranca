@@ -1,25 +1,41 @@
+/* Reset box-sizing */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
+/* HTML e body ocupam toda a altura e sem margens */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body: flex vertical para separar conteúdo e footer */
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-color: #0f111a;
     color: #ffffff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 40px 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     background-image: url('/media/fundo_login.jpg');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
 }
 
+/* Wrapper cresce e centraliza o conteúdo do login */
+.page-wrapper {
+    flex: 1; /* ocupa todo o espaço disponível entre topo e footer */
+    display: flex;
+    justify-content: center; /* centraliza horizontal */
+    align-items: center;     /* centraliza vertical */
+    padding: 40px 20px;
+}
+
+/* Card login */
 .login-container {
     background-color: #222d31;
     padding: 30px 40px;
@@ -36,6 +52,7 @@ body {
     background-size: cover;
 }
 
+/* Títulos */
 h1 {
     margin-bottom: 25px;
     font-weight: 700;
@@ -43,6 +60,7 @@ h1 {
     color: #ffffff;
 }
 
+/* Mensagens de erro */
 .mensagens {
     margin-bottom: 20px;
 }
@@ -54,6 +72,7 @@ h1 {
     text-align: left;
 }
 
+/* Formulário login */
 .login-form {
     display: flex;
     flex-direction: column;
@@ -61,13 +80,7 @@ h1 {
     text-align: left;
 }
 
-label {
-    font-weight: 600;
-    margin-bottom: 6px;
-    display: block;
-    color: #ffffff;
-}
-
+/* Inputs */
 input[type="text"],
 input[type="password"] {
     width: 100%;
@@ -84,10 +97,10 @@ input[type="text"]:focus,
 input[type="password"]:focus {
     outline: none;
     border-color: #0acfc7;
-    box-shadow:
-        0 0 8px #0acfc7;
+    box-shadow: 0 0 8px #0acfc7;
 }
 
+/* Botão entrar */
 .btn-entrar {
     background-color: #1df0de;
     color: #0f111a;
@@ -104,21 +117,22 @@ input[type="password"]:focus {
     background-color: #0acfc7;
 }
 
+/* Footer no rodapé, largura total */
 .footer {
+    width: 100vw;
     background-color: #222d31; 
     padding: 15px 20px;
     text-align: center;
     color: #1df0de; 
     font-size: 0.9rem;
-    border-radius: 0 0 12px 12px;
     box-shadow:
         0 -4px 8px rgba(29, 240, 222, 0.25),
         0 0 15px rgba(29, 240, 222, 0.2);
-    margin-top: 40px;
     user-select: none;
     font-family: 'Segoe UI', sans-serif;
 }
 
+/* Footer content */
 .footer-content p {
     margin: 0;
 }
