@@ -1,3 +1,4 @@
+
 🛡️ Sistema de Segurança Wayne Industries
 Sistema web para gerenciamento de segurança industrial, desenvolvido com Python + Django. Permite o controle de acesso de usuários, gestão de equipamentos, dispositivos e veículos, movimentação de itens entre locais, e visualização de painéis administrativos personalizados.
 
@@ -116,7 +117,6 @@ Copiar
 Editar
 http://127.0.0.1:8000/admin/
 🔄 Como restaurar o backup do banco de dados MySQL
-Se você possui um arquivo de backup .sql (por exemplo, backup_wayne_security.sql), siga estes passos para restaurar:
 
 1️⃣ Certifique-se que o servidor MySQL está rodando.
 
