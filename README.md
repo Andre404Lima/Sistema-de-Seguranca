@@ -12,6 +12,7 @@ Frontend: HTML, CSS, JavaScript
 Admin: Django Admin para gerenciamento interno
 
 🏗️ Funcionalidades
+
 ✅ Cadastro e autenticação de usuários com diferentes permissões (funcionário, gerente, administrador, batman e alfred)
 
 ✅ Gestão de equipamentos, dispositivos e veículos com associação a locais específicos
@@ -36,23 +37,33 @@ Admin: Django Admin para gerenciamento interno
 🚧 Adicionar testes automatizados para rotas críticas
 
 📦 Estrutura do Projeto
-bash
-Copiar
-Editar
+
 projeto_final/
 
 ├── core/                    # Aplicação principal
+
 │   ├── admin.py             # Painel administrativo do Django
+
 │   ├── models.py            # Modelos do sistema: Equipamento, Dispositivo, Veículo, etc.
+
+
 │   ├── views.py             # Lógicas das views para páginas HTML e interações
+
 │   ├── urls.py              # Rotas da aplicação
+
 │   ├── templates/core/      # Templates HTML organizados por tela
+
 │   ├── static/core/         # Arquivos CSS, JS e imagens estáticas
+
 │   └── forms.py             # Formulários do sistema
 
+
 ├── projeto_final/           # Configurações globais do Django
+
 │   ├── settings.py
+
 │   ├── urls.py
+
 │   └── wsgi.py
 
 ├── media/                   # Pasta para imagens e arquivos enviados pelos usuários
@@ -60,35 +71,38 @@ projeto_final/
 ├── manage.py                # Script de gerenciamento do Django
 
 └── venv/                    # Ambiente virtual Python
+
 🔧 Como rodar o projeto localmente
+
 1️⃣ Clone o repositório
-bash
-Copiar
-Editar
+
+
 git clone <URL_DO_REPOSITORIO>
+
 cd projeto_final
+
 2️⃣ Crie e ative o ambiente virtual
-bash
-Copiar
-Editar
+
+
 python -m venv venv
 
 # Windows (PowerShell)
+
 .\venv\Scripts\Activate.ps1
 
 # Linux/macOS
+
 source venv/bin/activate
+
 3️⃣ Instale as dependências
-bash
-Copiar
-Editar
+
+
 pip install django mysqlclient
+
 4️⃣ Configure o banco de dados MySQL
+
 Edite o arquivo projeto_final/settings.py e configure a seção DATABASES:
 
-python
-Copiar
-Editar
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -99,23 +113,44 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-5️⃣ Execute as migrações
-bash
-Copiar
-Editar
-python manage.py migrate
-6️⃣ Inicie o servidor de desenvolvimento
-bash
-Copiar
-Editar
-python manage.py runserver
-7️⃣ Acesse o sistema via navegador
-Abra o endereço:
 
-arduino
-Copiar
-Editar
+5️⃣ Execute as migrações
+
+python manage.py migrate
+
+6️⃣ Inicie o servidor de desenvolvimento
+
+python manage.py runserver
+
+7️⃣ Acesse o sistema via navegador
+
+Abra os endereços:
+
+
 http://127.0.0.1:8000/admin/
+login: batman 
+senha: 123456
+http://127.0.0.1:8000/login/
+
+users 
+funcionario: 
+login: andre
+senha: 123456
+gerente: 
+login: gerente
+senha: 123456
+administradoro: 
+login: admin
+senha: 123456
+batman: 
+login: batman 
+senha: 123456
+alfred:
+login: alfred
+senha: 123456
+
+
+
 🔄 Como restaurar o backup do banco de dados MySQL
 
 1️⃣ Certifique-se que o servidor MySQL está rodando.
@@ -124,23 +159,20 @@ http://127.0.0.1:8000/admin/
 
 3️⃣ Crie o banco de dados, caso não exista:
 
-bash
-Copiar
-Editar
 mysql -u root -p
+
 Digite a senha do usuário e execute:
 
 sql
-Copiar
-Editar
+
 CREATE DATABASE IF NOT EXISTS wayne_security CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 EXIT;
+
 4️⃣ Execute o comando para restaurar o backup (fora do prompt MySQL):
 
-bash
-Copiar
-Editar
 mysql -u root -p wayne_security < caminho/para/backup_wayne_security.sql
+
 Substitua caminho/para/backup_wayne_security.sql pelo caminho correto do seu arquivo.
 
 5️⃣ Aguarde a conclusão. O banco estará restaurado.
