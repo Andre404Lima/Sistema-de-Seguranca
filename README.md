@@ -1,4 +1,7 @@
+PROJETO FINAL - INFINITY SCHOLL
 
+ O desafio proposto pela escola foi o desenvolvimento de um Sistema de Gerenciamento de Segurança para as Indústrias Wayne
+ 
 🛡️ Sistema de Segurança Wayne Industries
 Sistema web para gerenciamento de segurança industrial, desenvolvido com Python + Django. Permite o controle de acesso de usuários, gestão de equipamentos, dispositivos e veículos, movimentação de itens entre locais, e visualização de painéis administrativos personalizados.
 
