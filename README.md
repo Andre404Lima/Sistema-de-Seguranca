@@ -1,4 +1,4 @@
-PROJETO FINAL - INFINITY SCHOLL
+PROJETO FINAL - INFINITY SCHOOL
 
  O desafio proposto pela escola foi o desenvolvimento de um Sistema de Gerenciamento de Segurança para as Indústrias Wayne
  
