@@ -4,23 +4,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dispositivos</title>
+    <title>{{ tipo_item|capfirst }}</title>
     <link rel="stylesheet" href="{% static 'core/listas.css' %}" />
 </head>
-<body class="{% if tipo_item %}{{ tipo_item }}{% endif %}">
+<body class="{{ tipo_item }}">
     <div class="top-card">
         <div style="display: flex; align-items: center; justify-content: space-between;">
-            <h1>Lista de Dispositivos</h1>
+            <h1>Lista de {{ tipo_item|capfirst }}s</h1>
             {% if request.user.user_type in 'administrador batman alfred' %}
-                <form method="get" action="{% url 'criar_item' 'dispositivo' %}">
-                    <button type="submit" class="botao-compra">Criar Dispositivo</button>
+                <form method="get" action="{% url 'criar_item' tipo_item %}">
+                    <button type="submit" class="botao-compra">Criar {{ tipo_item|capfirst }}</button>
                 </form>
             {% endif %}
         </div>
         <p>Bem-vindo: {{ request.user.username }} | Cargo: {{ request.user.get_user_type_display }}</p>
     </div>
 
-    {% for item in dispositivos %}
+    {% for item in itens %}
         <div class="item-card">
             {% if item.obj.imagem %}
                 <div class="imagem">
@@ -29,24 +29,30 @@
             {% endif %}
 
             <div class="informacoes">
-                <!-- NOME E BOTÃO DE COMPRA -->
                 <div class="modelo" style="display: flex; align-items: center; justify-content: space-between;">
                     <div>
                         {% if item.obj.secret %}
                             <span class="secreto">[SECRETO]</span>
                         {% endif %}
-                        <strong>{{ item.obj.nome }} — Total: {{ item.total }}</strong>
+                        <strong>
+                            {% if item.obj.modelo %}
+                                {{ item.obj.nome }} — {{ item.obj.modelo }}
+                            {% else %}
+                                {{ item.obj.nome }}
+                            {% endif %}
+                            — Total: {{ item.total }}
+                        </strong>
+
                     </div>
                 </div>
 
-                <!-- FORMULÁRIO DE COMPRA -->
                 <div id="formulario-compra-{{ item.obj.id }}" style="display:none; margin-top:10px;">
                     <form method="post" action="{% if request.user.user_type == 'funcionario' %}{% url 'solicitar_compra' %}
                                 {% elif request.user.user_type == 'gerente' %}{% url 'criar_ordem_compra' %}
                                 {% elif request.user.user_type in 'administrador batman alfred' and request.user.user_type != 'alfred' or item.obj.secret %}{% url 'criar_ordem_compra' %}
                                 {% endif %}">
                         {% csrf_token %}
-                        <input type="hidden" name="tipo_item" value="dispositivo" />
+                        <input type="hidden" name="tipo_item" value="{{ tipo_item }}" />
                         <input type="hidden" name="item_id" value="{{ item.obj.id }}" />
                         <label>Qtd:</label>
                         <input type="number" name="quantidade" min="1" required style="width:60px;" />
@@ -61,20 +67,18 @@
                     </form>
                 </div>
 
-                <!-- DESCRIÇÃO -->
                 <div class="descricao">{{ item.obj.descricao }}</div>
 
-                <!-- ESTOQUES -->
                 <div class="estoques">
                     <ul>
                         {% for est in item.estoques %}
                             <li>
                                 {{ est.get_localizacao_display }} — {{ est.quantidade }}
-                                <button class="bot"type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
+                                <button class="bot" type="button" onclick="abrirFormulario('{{ est.id }}')">Mover</button>
                                 <div id="formulario-{{ est.id }}" style="display: none; margin-top: 5px;">
-                                    <form method="post" action="{% url 'solicitar_movimentacao' %}" style="display:inline-block; margin-top: 5px;">
+                                    <form method="post" action="{% url 'solicitar_movimentacao' %}">
                                         {% csrf_token %}
-                                        <input type="hidden" name="tipo_item" value="dispositivo" />
+                                        <input type="hidden" name="tipo_item" value="{{ tipo_item }}" />
                                         <input type="hidden" name="item_id" value="{{ item.obj.id }}" />
                                         <input type="hidden" name="origem" value="{{ est.localizacao }}" />
                                         <label>Qtd:</label>
@@ -97,9 +101,8 @@
                         {% endfor %}
                     </ul>
                 </div>
-            </div> <!-- Fim da div.informacoes -->
+            </div>
 
-            <!-- BOTÕES VERTICAIS -->
             <div class="botoes-verticais">
                 {% if request.user.user_type == 'funcionario' %}
                     <button class="botao-compra" onclick="abrirFormulario('compra-{{ item.obj.id }}')">
@@ -118,12 +121,12 @@
                 {% endif %}
 
                 {% if request.user.user_type in 'administrador batman alfred' %}
-                    <form method="get" action="{% url 'editar_item' 'dispositivo' item.obj.id %}">
+                    <form method="get" action="{% url 'editar_item' tipo_item item.obj.id %}">
                         <button type="submit" class="botao-compra">Editar</button>
                     </form>
                 {% endif %}
             </div>
-        </div> <!-- Fim da div.item-card -->
+        </div>
     {% endfor %}
 
     <div id="overlay" onclick="fecharImagem()">

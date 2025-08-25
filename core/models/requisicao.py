@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
 from core.models.dispositivo import Dispositivo
 from core.models.equipamento import Equipamento
 from core.models.veiculo import Veiculo

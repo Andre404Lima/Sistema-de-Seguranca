@@ -76,9 +76,17 @@
                         de <em>{{ mov.origem }}</em> para <em>{{ mov.destino }}</em> —
                         Solicitado por {{ mov.solicitante.username }} —
                         Status: {{ mov.status }}
+
                         {% if user.user_type == 'gerente' or user.user_type == 'batman' or user.user_type == 'alfred' or user.user_type == 'administrador' and mov.status == 'pendente' %}
-                            <a href="{% url 'autorizar_requisicao' mov.id %}">[Autorizar]</a>
-                            <a href="{% url 'rejeitar_requisicao' mov.id %}">[Negar]</a>
+                            <form method="POST" action="{% url 'autorizar_requisicao' mov.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">[Autorizar]</button>
+                            </form>
+
+                            <form method="POST" action="{% url 'rejeitar_requisicao' mov.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">[Negar]</button>
+                            </form>
                         {% endif %}
                     </li>
                 {% endwith %}
@@ -91,7 +99,7 @@
     <!-- Itens (Dispositivos, Equipamentos, Veículos) -->
     <h2>Itens</h2>
     <div class="itens-container">
-        <a href="{% url 'lista_dispositivos' %}" class="item-card-link">
+        <a href="{% url 'itens_categoria' 'dispositivo' %}" class="item-card-link">
             <div class="item-card" style="background-image: url('/media/dispositivos/Capa.jpg');">
                 <div class="item-info">
                     <span class="item-titulo">Dispositivos</span>
@@ -99,7 +107,7 @@
             </div>
         </a>
 
-        <a href="{% url 'lista_equipamentos' %}" class="item-card-link">
+        <a href="{% url 'itens_categoria' 'equipamento' %}" class="item-card-link">
             <div class="item-card" style="background-image: url('/media/equipamentos/Capa.jpg');">
                 <div class="item-info">
                     <span class="item-titulo">Equipamentos</span>
@@ -107,7 +115,7 @@
             </div>
         </a>
 
-        <a href="{% url 'lista_veiculos' %}" class="item-card-link">
+        <a href="{% url 'itens_categoria' 'veiculo' %}" class="item-card-link">
             <div class="item-card" style="background-image: url('/media/veiculos/Capa.jpg');">
                 <div class="item-info">
                     <span class="item-titulo">Veículos</span>

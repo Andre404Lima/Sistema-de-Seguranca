@@ -1,15 +1,15 @@
-from .auth_view import login_view, logout_view
-from .dashboard_view import dashboard, formatar_nome_imagem
-from .equipamentos_view import lista_equipamentos
-from .dispositivos_view import lista_dispositivos
-from .veiculos_view import lista_veiculos
-from .local_view import itens_por_local
-from .movimentacao_view import solicitar_movimentacao, autorizar_requisicao, rejeitar_requisicao
-from .solicitar_compra_view import solicitar_compra
-from.ordem_de_compra_view import autorizar_solicitacao_compra, negar_solicitacao_compra, criar_ordem_compra_direta, pagar_ordem_compra, negar_ordem_compra
-from .manutencao_view import solicitar_manutencao, mover_direto_para_manutencao, concluir_manutencao,aprovar_envio_manutencao, negar_manutencao
-from .criar_item_view import criar_item
-from .editar_item_view import editar_item
-from .create_user_view import controle_usuarios
-from .listar_user_view import usuarios_lista
-from .desativar_user_view import desativar_usuario
+
+from .criar_item_view import CriarItemView
+from .auth_view import LoginView, LogoutView
+from .controle_usuario_view import ControleUsuariosView
+from .listar_user_view import ListaUsuarioView
+from .dashboard_view import DashboardView, formatar_nome_imagem
+from .lista_itens_view import ItensPorCategoriaView
+from .editar_item_view import EditarItemView
+from .local_view import ItensPorLocalView
+from .manutencao_view import SolicitarManutencaoView, AprovarManutencaoView, NegarManutencaoView, MoverDiretoParaManutencaoView, ConcluirManutencaoView
+from .movimentacao_view import SolicitarMovimentacaoView, AutorizarRequisicaoView, RejeitarRequisicaoView
+from .ordem_de_compra_view import AutorizarSolicitacaoCompraView, NegarOrdemCompraView, CriarOrdemCompraDiretaView, PagarOrdemCompraView, NegarSolicitacaoCompraView
+from .solicitar_compra_view import SolicitarCompraView
+
+
