@@ -9,52 +9,21 @@ from core.models.user import CustomUser
 
 
 class ControleUsuariosView(LoginRequiredMixin, View):
+    # exibe as últimas 50 ações
     def get(self, request):
-        # Exibe a tela de controle de usuários com base no tipo de usuário logado.
-        user_type = request.user.user_type
+        # Pega permissões e tipos permitidos do usuário logado
+        pode_criar, tipos_permitidos, usuarios, base_qs = request.user.get_permissoes()
 
-        # Define permissões e escopo de visualização conforme tipo de usuário
-        if user_type == 'funcionario':
-            base_qs = AcaoUsuario.objects.filter(usuario__user_type='funcionario')
-            pode_criar = False
-            tipos_permitidos = []
-            usuarios = CustomUser.objects.none()
-
-        elif user_type == 'gerente':
-            base_qs = AcaoUsuario.objects.filter(usuario__user_type__in=['funcionario', 'gerente'])
-            pode_criar = False
-            tipos_permitidos = []
-            usuarios = CustomUser.objects.filter(user_type__in=['funcionario', 'gerente'], is_active=True)
-
-        elif user_type == 'administrador':
-            base_qs = AcaoUsuario.objects.filter(usuario__user_type__in=['funcionario', 'gerente', 'administrador'])
-            pode_criar = True
-            tipos_permitidos = ['funcionario', 'gerente', 'administrador']
-            usuarios = CustomUser.objects.filter(user_type__in=tipos_permitidos, is_active=True)
-
-        elif user_type in ['batman', 'alfred']:
-            base_qs = AcaoUsuario.objects.all()
-            pode_criar = (user_type == 'batman')  # Só o Batman pode criar usuários desse nível
-            tipos_permitidos = ['funcionario', 'gerente', 'administrador', 'batman', 'alfred']
-            usuarios = CustomUser.objects.filter(is_active=True)
-
-        else:
-            base_qs = AcaoUsuario.objects.none()
-            pode_criar = False
-            tipos_permitidos = []
-            usuarios = CustomUser.objects.none()
-
-        # Coleta últimas 50 ações e agrupa por tipo de usuário
-        base_qs = base_qs.order_by('-data_hora')[:50]
+        # lista últimas 50 ações
+        base_qs = base_qs.order_by('-data_hora')[:50] 
         acoes_por_cargo = defaultdict(list)
         for acao in base_qs:
             acoes_por_cargo[acao.usuario.user_type].append({
                 'usuario_nome': acao.usuario.username,
                 'acao': acao.acao,
                 'data_hora': acao.data_hora,
-            })
+            }) 
 
-        # Inicializa o formulário de criação, mesmo se for só para exibir
         form = UserCreationFormCustom(tipos_permitidos=tipos_permitidos)
 
         return render(request, 'core/controle_usuarios.html', {
@@ -65,7 +34,7 @@ class ControleUsuariosView(LoginRequiredMixin, View):
         })
 
     def post(self, request):
-        # Trata POSTs para criação ou desativação de usuários
+    # Trata POSTs para criação ou desativação de usuários
         acao = request.POST.get('acao')
 
         if acao == 'criar':
@@ -77,31 +46,24 @@ class ControleUsuariosView(LoginRequiredMixin, View):
         return HttpResponseForbidden("Ação inválida.")
 
     def _criar_usuario(self, request):
-        # Cria um novo usuário, respeitando os tipos permitidos por quem está logado
-        user_type = request.user.user_type
+        pode_criar, _, tipos_permitidos, usuarios, base_qs = request.user.get_permissoes()
+        # Pega permissões e tipos permitidos do usuário logado
 
-        if user_type == 'administrador':
-            tipos_permitidos = ['funcionario', 'gerente', 'administrador']
-        elif user_type == 'batman':
-            tipos_permitidos = ['funcionario', 'gerente', 'administrador', 'batman', 'alfred']
-        else:
+        if not pode_criar or not tipos_permitidos:
             return HttpResponseForbidden("Sem permissão para criar usuários.")
 
         form = UserCreationFormCustom(request.POST, tipos_permitidos=tipos_permitidos)
 
         if form.is_valid():
+            # Salva novo usuário e registra ação
             novo_usuario = form.save()
-            # Registra ação de criação
             AcaoUsuario.objects.create(
                 usuario=request.user,
                 acao=f"Usuário '{novo_usuario.username}' criado com tipo '{novo_usuario.user_type}'"
             )
             return redirect('controle_usuarios')
 
-        # Se inválido, recarrega a tela com erros
-        usuarios = CustomUser.objects.filter(user_type__in=tipos_permitidos, is_active=True)
-        base_qs = AcaoUsuario.objects.filter(usuario__user_type__in=tipos_permitidos).order_by('-data_hora')[:50]
-
+        base_qs = base_qs.order_by('-data_hora')[:50] # Se formulário inválido, agrupa últimas ações por tipo de usuário
         acoes_por_cargo = defaultdict(list)
         for acao in base_qs:
             acoes_por_cargo[acao.usuario.user_type].append({
@@ -110,6 +72,7 @@ class ControleUsuariosView(LoginRequiredMixin, View):
                 'data_hora': acao.data_hora,
             })
 
+        # Recarrega página com erros do formulário
         return render(request, 'core/controle_usuarios.html', {
             'usuarios': usuarios,
             'pode_criar': True,
@@ -117,31 +80,39 @@ class ControleUsuariosView(LoginRequiredMixin, View):
             'acoes_por_cargo': dict(acoes_por_cargo),
         })
 
+
     def _desativar_usuario(self, request):
-        # Desativa um usuário com base nas permissões do usuário logado
         user_id = request.POST.get('user_id')
         current_user = request.user
-        current_type = current_user.user_type
 
-        if current_type not in ['administrador', 'batman', 'alfred']:
-            return HttpResponseForbidden("Você não tem permissão para desativar usuários.")
+        # Pega flag de desativação do usuário logado
+        _, pode_desativar, _, _, _ = current_user.get_permissoes()
 
+        # Bloqueia se usuário não tiver permissão
+        if not pode_desativar:
+            return HttpResponseForbidden("Sem permissão para desativar usuários.")
+
+        # Busca usuário a ser desativado
         usuario = get_object_or_404(CustomUser, pk=user_id)
 
-        # Impede que administradores desativem usuários de nível superior
-        if current_type == 'administrador' and usuario.user_type in ['batman', 'alfred']:
+        # Impede administrador de desativar usuários superiores
+        if current_user.user_type == 'administrador' and usuario.user_type in ['batman', 'alfred']:
             return HttpResponseForbidden("Administrador não pode desativar usuários Batman ou Alfred.")
 
+        # Impede auto-desativação
         if usuario == current_user:
             return HttpResponseForbidden("Você não pode desativar seu próprio usuário.")
 
+        # Desativa usuário e registra ação
         usuario.is_active = False
         usuario.save()
 
-        # Registra a ação de desativação
         AcaoUsuario.objects.create(
             usuario=current_user,
             acao=f"Desativou o usuário '{usuario.username}'"
         )
 
         return redirect('controle_usuarios')
+
+
+

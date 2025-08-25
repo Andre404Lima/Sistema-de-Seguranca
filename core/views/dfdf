@@ -1,0 +1,33 @@
+def _criar_usuario(self, request):
+    pode_criar, tipos_permitidos, usuarios, base_qs = request.user.get_permissoes()
+
+    if not pode_criar or not tipos_permitidos:
+        return HttpResponseForbidden("Sem permissão para criar usuários.")
+
+    form = UserCreationFormCustom(request.POST, tipos_permitidos=tipos_permitidos)
+
+    if form.is_valid():
+        novo_usuario = form.save()
+        # Registra ação de criação
+        AcaoUsuario.objects.create(
+            usuario=request.user,
+            acao=f"Usuário '{novo_usuario.username}' criado com tipo '{novo_usuario.user_type}'"
+        )
+        return redirect('controle_usuarios')
+
+    # Se inválido, recarrega a tela com erros
+    base_qs = base_qs.order_by('-data_hora')[:50]
+    acoes_por_cargo = defaultdict(list)
+    for acao in base_qs:
+        acoes_por_cargo[acao.usuario.user_type].append({
+            'usuario_nome': acao.usuario.username,
+            'acao': acao.acao,
+            'data_hora': acao.data_hora,
+        })
+
+    return render(request, 'core/controle_usuarios.html', {
+        'usuarios': usuarios,
+        'pode_criar': True,
+        'form': form,
+        'acoes_por_cargo': dict(acoes_por_cargo),
+    })
